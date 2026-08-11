@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pklnx</title>
+<meta name="description" content="pklnx — infrastructure &amp; backend engineering">
+<meta name="theme-color" content="#0a0a0c">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0a0c'/%3E%3Crect x='8' y='8' width='16' height='16' fill='none' stroke='%237f9cc0' stroke-width='2'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg:     #0a0a0c;
+    --fg:     #e6e7ea;
+    --muted:  #8a8f98;
+    --accent: #7f9cc0;
+    --rule:   #1c1d22;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+            "DejaVu Sans Mono", "Liberation Mono", monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(2rem, 7vw, 5rem);
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--mono);
+    line-height: 1.6;
+    -webkit-text-size-adjust: 100%;
+    animation: rise .8s ease-out both;
+  }
+
+  /* Rasterhintergrund rein aus Gradienten — kein Bild, kein Request.
+     Traegt den Datenblatt-Charakter der Variante. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      repeating-linear-gradient(to right,  var(--rule) 0 1px, transparent 1px 5rem),
+      repeating-linear-gradient(to bottom, var(--rule) 0 1px, transparent 1px 5rem);
+    opacity: .5;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    body { animation: none; }
+  }
+
+  main { width: 100%; max-width: 46rem; margin: 0 auto; }
+
+  h1 {
+    margin: 0 0 clamp(1.75rem, 5vh, 2.5rem);
+    font-size: clamp(2rem, 8vw, 3rem);
+    font-weight: 500;
+    letter-spacing: -.01em;
+    line-height: 1.1;
+  }
+
+  /* Von Haarlinien gefasstes Band; der kurze Akzent-Strich sitzt auf der
+     oberen Linie und markiert den Zeilenanfang wie in einem Datenblatt. */
+  .band {
+    position: relative;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .band::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: clamp(2rem, 8vw, 3rem);
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .tagline {
+    margin: 0;
+    font-size: clamp(.875rem, 2.6vw, 1rem);
+    letter-spacing: .01em;
+  }
+
+  footer {
+    margin: clamp(1.75rem, 5vh, 2.5rem) 0 0;
+    color: var(--muted);
+    font-size: .75rem;
+    letter-spacing: .12em;
+  }
+</style>
+</head>
+<body>
+
+<main>
+  <h1>pklnx</h1>
+
+  <div class="band">
+    <p class="tagline">infrastructure &amp; backend engineering</p>
+  </div>
+
+  <footer>pklnx.space</footer>
+</main>
+
+</body>
+</html>

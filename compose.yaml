@@ -5,15 +5,15 @@ services:
     container_name: pklnx-space
     restart: unless-stopped
 
-    # Nur auf dem Loopback erreichbar — der Reverse Proxy auf dem Host leitet
-    # hierher weiter. Ohne die 127.0.0.1-Bindung waere der Container am
-    # oeffentlichen Interface offen und wuerde die TLS-Terminierung umgehbar machen.
+    # Reachable on the loopback interface only — the reverse proxy on the host
+    # forwards here. Without the 127.0.0.1 binding the container would sit on
+    # the public interface and TLS termination could be bypassed.
     ports:
       - "127.0.0.1:8080:8080"
 
-    # Haerten: nichts am Dateisystem muss zur Laufzeit beschrieben werden.
-    # nginx schreibt pid und Temp-Dateien nach /tmp (siehe nginx.conf), Caches
-    # nach /var/cache/nginx — beides liegt hier im RAM statt im Image.
+    # Hardening: nothing on the filesystem needs to be written at runtime.
+    # nginx writes its pid and temp files to /tmp (see nginx.conf) and caches
+    # to /var/cache/nginx — both live in RAM here instead of in the image.
     read_only: true
     tmpfs:
       - /tmp

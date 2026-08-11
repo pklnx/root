@@ -1,104 +1,107 @@
 # pklnx.space
 
-Statische Visitenkarten-Landingpage für die Domain `pklnx.space`. Rein privat, keine
-geschäftliche Nutzung, keine Inhalte und keine Links auf Dienste.
+Static business-card landing page for the domain `pklnx.space`. Private use only, no
+commercial use, no content and no links to services.
 
-Die gesamte Seite ist eine einzelne Datei: `index.html`.
+The entire site is a single file: `index.html`.
 
-## Harte Randbedingung: null externe Requests
+## Hard constraint: zero external requests
 
-Die Seite lädt **nichts** von außen — keine Webfonts, keine CDNs, kein Analytics, keine
-externen Bilder. Damit kommt sie ohne Consent-Banner aus. Konkret heißt das für jede
-Änderung an dieser Datei:
+The page loads **nothing** from the outside — no web fonts, no CDNs, no analytics, no
+external images. That is what lets it run without a consent banner. In practice, for every
+change to this file:
 
-- CSS bleibt inline im `<style>`, kein `@import`, kein `<link rel="stylesheet">`
-- kein JavaScript, keine `<script>`-Tags
-- nur System-Font-Stacks
-- Grafik nur als Inline-SVG oder CSS-Gradient; das Favicon ist ein `data:`-URI, damit der
-  Browser gar nicht erst auf `/favicon.ico` losläuft
-- kein Build-Step, kein Framework
+- CSS stays inline in `<style>`; no `@import`, no `<link rel="stylesheet">`
+- no JavaScript, no `<script>` tags
+- system font stacks only
+- graphics only as inline SVG or CSS gradient; the favicon is a `data:` URI so the browser
+  never goes looking for `/favicon.ico`
+- no build step, no framework
 
-Das einzige `http://` im Quelltext ist `http://www.w3.org/2000/svg`, der XML-Namespace des
-Favicon-SVG. Das ist ein Bezeichner, keine URL, die abgerufen wird.
+The only `http://` in the source is `http://www.w3.org/2000/svg`, the XML namespace of the
+favicon SVG. That is an identifier, not a URL that gets fetched.
 
-## Inhalt
+## Content
 
-Die Seite besteht aus genau drei Textelementen — mehr soll sie nicht sagen:
+The page consists of exactly three pieces of text — it is not meant to say more:
 
 | Element  | Text                                 |
 |----------|--------------------------------------|
-| Wortmark | `pklnx`                              |
+| Wordmark | `pklnx`                              |
 | Tagline  | `infrastructure & cloud engineering` |
 | Footer   | `pklnx.space`                        |
 
-Die Tagline steht zweimal im Quelltext: sichtbar im `<p class="tagline">` und in
-`<meta name="description">`. Beim Ändern beide Stellen mitnehmen.
+The tagline appears twice in the source: visibly in `<p class="tagline">` and in
+`<meta name="description">`. Change both.
 
-## Gestaltung
+## Design
 
-Dark und reduziert. Der Charakter kommt nicht aus dem Text, sondern aus der Textur: ein
-Gitterhintergrund aus zwei `repeating-linear-gradient` (kein Bild, kein Request) und ein
-von Haarlinien gefasstes Band für die Tagline, dessen obere Linie links einen kurzen
-Akzent-Strich in Stahlblau trägt.
+Dark and reduced. The character does not come from the text but from the texture: a grid
+backdrop built from two `repeating-linear-gradient` layers (no image, no request) and a
+band framed by hairlines for the tagline, whose top rule carries a short steel-blue accent
+tick on the left.
 
-Ein einziger System-Monospace-Stack, keine Zweitschrift. Farben liegen als
-CSS-Custom-Properties im `:root`. Alle gedimmten Texte erreichen rund 6:1 Kontrast gegen
-den Hintergrund und damit deutlich mehr als die von WCAG geforderten 4.5:1 — bei dunklen,
-reduzierten Layouts ist ein zu dunkles Grau der naheliegendste Fehler.
+A single system monospace stack, no secondary typeface. Colors live as CSS custom
+properties in `:root`. All dimmed text reaches roughly 6:1 contrast against the background,
+comfortably above the 4.5:1 WCAG requires — in dark, reduced layouts a too-dark grey is the
+easiest mistake to make.
 
-Frühere Entwürfe (eine linksbündige Terminal-Variante und eine zentrierte) liegen nicht
-mehr im Arbeitsverzeichnis, sind aber über die Git-Historie erreichbar.
+Earlier drafts (a left-aligned terminal variant and a centred one) are no longer in the
+working tree but remain reachable through the git history.
 
 ## Deployment
 
-Zwei Wege. Beide liefern dieselbe Datei aus.
+Two options. Both serve the same file.
 
-### Ohne Container
+### Without a container
 
-`index.html` in das Document-Root eines beliebigen Webservers legen. Sonst nichts.
+Drop `index.html` into the document root of any web server. That is all.
 
-### Als Container
+### As a container
 
-Das Image ist ein `nginx:stable-alpine` mit `index.html` und `nginx.conf` darin — kein
-Build-Schritt, keine Runtime, keine Abhängigkeiten. Es liefert **nur HTTP auf Port 8080**
-aus; TLS macht der Reverse Proxy davor.
+The image is an `nginx:stable-alpine` with `index.html` and `nginx.conf` baked in — no
+build step, no runtime, no dependencies. It serves **HTTP on port 8080 only**; TLS is
+handled by the reverse proxy in front.
 
 ```
 docker compose up -d
 ```
 
-Oder ohne Compose:
+Or without compose:
 
 ```
 docker build -t pklnx-space .
 docker run -d --name pklnx-space -p 127.0.0.1:8080:8080 pklnx-space
 ```
 
-Fertig gebaute Images liegen nach jedem Push auf den Default-Branch unter
-`ghcr.io/pklnx/hermes:latest` (amd64 und arm64), gebaut von
+Prebuilt images are published on every push to the default branch as
+`ghcr.io/pklnx/hermes:latest` (amd64 and arm64), built by
 `.github/workflows/docker.yml`:
 
 ```
 docker pull ghcr.io/pklnx/hermes:latest
 ```
 
-Ein paar Entscheidungen, die im Betrieb erklärungsbedürftig sind:
+A few decisions that need explaining in operation:
 
-- **Port 8080, nicht 80.** Der Container läuft als nicht-root (`USER nginx`), und
-  unprivilegierte Prozesse dürfen keine Ports unter 1024 binden. Alles Schreibbare
-  (pid, Temp-Dateien) liegt deshalb unter `/tmp`.
-- **Bindung auf `127.0.0.1`.** Der Container ist nur über das Loopback erreichbar; der
-  Reverse Proxy auf dem Host leitet dorthin weiter. Ohne diese Bindung wäre er direkt am
-  öffentlichen Interface offen und die TLS-Terminierung umgehbar.
-- **`read_only: true`** im Compose-File, mit `tmpfs` für `/tmp` und `/var/cache/nginx`.
-  Falls das je Probleme macht, ist es die erste Zeile, die man streicht.
-- **Health-Check gegen `/`.** Bei einer einzigen Datei ist die Seite selbst der
-  aussagekräftigste Endpoint; ein separates `/healthz` würde etwas prüfen, das niemand
-  abruft.
+- **Port 8080, not 80.** The container runs as non-root (`USER nginx`), and unprivileged
+  processes may not bind ports below 1024. Everything writable (pid, temp files) therefore
+  lives under `/tmp`.
+- **Bound to `127.0.0.1`.** The container is reachable on the loopback interface only; the
+  reverse proxy on the host forwards to it. Without that binding it would sit on the public
+  interface and TLS termination could be bypassed.
+- **`read_only: true`** in the compose file, with `tmpfs` for `/tmp` and `/var/cache/nginx`.
+  If that ever causes trouble, it is the first line to drop.
+- **Health check against `/`.** With a single file, the page itself is the most meaningful
+  endpoint; a separate `/healthz` would test something nobody ever requests.
 
-### Reverse-Proxy-Beispiel
+Before publishing, CI builds the image, starts it, and checks that it becomes healthy, runs
+as `nginx` rather than root, serves `index.html` byte-for-byte, sends the CSP, and answers
+everything except `/` with a 404. A broken image never reaches the registry.
 
-nginx auf dem Host:
+### Reverse proxy examples
+
+nginx on the host:
 
 ```nginx
 location / {
@@ -116,19 +119,19 @@ pklnx.space {
 }
 ```
 
-## Content-Security-Policy
+## Content Security Policy
 
-`nginx.conf` setzt eine CSP, die festschreibt, was die Seite ohnehin tut:
+`nginx.conf` sets a CSP that pins down what the page already does:
 
 ```
 default-src 'none'; style-src 'unsafe-inline'; img-src data:;
 base-uri 'none'; form-action 'none'; frame-ancestors 'none'
 ```
 
-Das ist kein Beiwerk, sondern die Durchsetzung der Regel weiter oben: Sobald jemand eine
-externe Ressource einbaut, blockiert der Browser sie, statt sie still zu laden. `style-src
-'unsafe-inline'` ist nötig, weil das CSS inline im `<style>` steht; `img-src data:` deckt
-das Favicon ab. Skripte sind komplett verboten — auch inline.
+This is not decoration but the enforcement of the rule at the top: the moment somebody adds
+an external resource, the browser blocks it instead of quietly loading it. `style-src
+'unsafe-inline'` is required because the CSS sits inline in `<style>`; `img-src data:`
+covers the favicon. Scripts are forbidden entirely — inline ones too.
 
-Wer die Seite erweitert und dabei eine CSP-Verletzung in der Browser-Konsole sieht, hat
-die Consent-Freiheit gebrochen, nicht die CSP falsch konfiguriert.
+If you extend the page and see a CSP violation in the browser console, you broke the
+consent-free operation, you did not misconfigure the CSP.

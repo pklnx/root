@@ -1,6 +1,11 @@
-# Whitelist: the build context holds only what the image actually needs.
-# Neither .git nor the README end up in the context, and a newly added file
-# cannot sneak into the image by accident.
+# Allow-list: exclude everything, then re-include what the image needs.
+# Keeping this an allow-list means repo housekeeping files (README, LICENSE,
+# workflows, git metadata) can never leak into the public web root, and a newly
+# added file cannot sneak into the image by accident.
 *
+
+# The site
 !index.html
-!nginx.conf
+
+# Build inputs that are not published
+!docker/

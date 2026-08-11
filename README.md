@@ -59,27 +59,30 @@ Drop `index.html` into the document root of any web server. That is all.
 
 ### As a container
 
-The image is an `nginx:stable-alpine` with `index.html` and `nginx.conf` baked in — no
+The image is an `nginx:alpine` with `index.html` and `docker/nginx.conf` baked in — no
 build step, no runtime, no dependencies. It serves **HTTP on port 8080 only**; TLS is
-handled by the reverse proxy in front.
+handled by the reverse proxy in front. The base image is intentionally unpinned, so every
+rebuild picks up the current nginx (mainline) with its security patches. A new minor can
+therefore land unannounced — the smoke test below is what catches it. If a build ever needs
+to be reproducible, pin the tag in the `Dockerfile` to a minor such as `nginx:1.30-alpine`.
 
 ```
-docker compose up -d
+docker compose up -d --build
 ```
 
 Or without compose:
 
 ```
 docker build -t pklnx-space .
-docker run -d --name pklnx-space -p 127.0.0.1:8080:8080 pklnx-space
+docker run -d --name pklnx-space --read-only --tmpfs /tmp -p 127.0.0.1:8080:8080 pklnx-space
 ```
 
 Prebuilt images are published on every push to the default branch as
-`ghcr.io/pklnx/hermes:latest` (amd64 and arm64), built by
+`ghcr.io/pklnx/root:latest` (amd64 and arm64), built by
 `.github/workflows/docker.yml`:
 
 ```
-docker pull ghcr.io/pklnx/hermes:latest
+docker pull ghcr.io/pklnx/root:latest
 ```
 
 A few decisions that need explaining in operation:
@@ -90,14 +93,20 @@ A few decisions that need explaining in operation:
 - **Bound to `127.0.0.1`.** The container is reachable on the loopback interface only; the
   reverse proxy on the host forwards to it. Without that binding it would sit on the public
   interface and TLS termination could be bypassed.
-- **`read_only: true`** in the compose file, with `tmpfs` for `/tmp` and `/var/cache/nginx`.
-  If that ever causes trouble, it is the first line to drop.
-- **Health check against `/`.** With a single file, the page itself is the most meaningful
-  endpoint; a separate `/healthz` would test something nobody ever requests.
+- **`read_only: true`** in the compose file, with a `tmpfs` for `/tmp`. Nothing else is
+  written at runtime — the nginx pid file and all temp paths point below `/tmp`. If that
+  ever causes trouble, it is the first line to drop.
+- **Health check against `/healthz`.** A separate endpoint keeps health traffic out of the
+  page's access log, and the probe stays independent of the caching rule on `/`.
+- **No client IPs in the access log.** `docker/nginx.conf` uses a `privacy` log format that
+  records everything except `$remote_addr`. The error log is the exception: nginx always
+  stamps the client IP into it and offers no way to format that away.
 
-Before publishing, CI builds the image, starts it, and checks that it becomes healthy, runs
-as `nginx` rather than root, serves `index.html` byte-for-byte, sends the CSP, and answers
-everything except `/` with a 404. A broken image never reaches the registry.
+Before publishing, CI builds the image, starts it with the same `--read-only --tmpfs /tmp`
+hardening the compose file uses, and checks that it becomes healthy, runs as `nginx` rather
+than root, serves `index.html` byte-for-byte, answers `/healthz` with a 200, sends the CSP,
+and answers everything else with a 404. Pull requests run the same build and smoke test but
+push nothing, so a broken image never reaches the registry.
 
 ### Reverse proxy examples
 
@@ -121,7 +130,7 @@ pklnx.space {
 
 ## Content Security Policy
 
-`nginx.conf` sets a CSP that pins down what the page already does:
+`docker/nginx.conf` sets a CSP that pins down what the page already does:
 
 ```
 default-src 'none'; style-src 'unsafe-inline'; img-src data:;
@@ -135,3 +144,9 @@ covers the favicon. Scripts are forbidden entirely — inline ones too.
 
 If you extend the page and see a CSP violation in the browser console, you broke the
 consent-free operation, you did not misconfigure the CSP.
+
+## License
+
+Proprietary — see [`LICENSE`](LICENSE). Copyright (c) 2026 Patrick Klein, all rights
+reserved. Nothing in this repository may be used, copied, or redistributed without prior
+written permission.

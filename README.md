@@ -59,10 +59,12 @@ Drop `index.html` into the document root of any web server. That is all.
 
 ### As a container
 
-The image is an `nginx:1.30-alpine` with `index.html` and `docker/nginx.conf` baked in — no
+The image is an `nginx:alpine` with `index.html` and `docker/nginx.conf` baked in — no
 build step, no runtime, no dependencies. It serves **HTTP on port 8080 only**; TLS is
-handled by the reverse proxy in front. The base image is pinned to a minor version; patch
-releases arrive on the next rebuild, a new minor is a deliberate edit to the `Dockerfile`.
+handled by the reverse proxy in front. The base image is intentionally unpinned, so every
+rebuild picks up the current nginx (mainline) with its security patches. A new minor can
+therefore land unannounced — the smoke test below is what catches it. If a build ever needs
+to be reproducible, pin the tag in the `Dockerfile` to a minor such as `nginx:1.30-alpine`.
 
 ```
 docker compose up -d --build

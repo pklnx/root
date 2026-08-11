@@ -6,9 +6,13 @@
 #   docker build -t pklnx-space .
 #   docker run --rm --read-only --tmpfs /tmp -p 8080:8080 pklnx-space
 #
-# Bump the base image by changing the minor version below (patch releases are
-# picked up automatically on rebuild).
-FROM nginx:1.30-alpine
+# The base image is deliberately unpinned: every rebuild picks up the current
+# alpine image, so security patches arrive without anyone having to notice them.
+# The price is that a new nginx minor can land unannounced — which is what the
+# smoke test in .github/workflows/docker.yml is there to catch before the image
+# reaches the registry. Pin to a minor (nginx:1.30-alpine) if a build ever has
+# to be reproducible.
+FROM nginx:alpine
 
 LABEL org.opencontainers.image.title="pklnx.space" \
       org.opencontainers.image.description="Static landing page of pklnx — infrastructure & cloud engineering" \

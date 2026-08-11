@@ -49,6 +49,52 @@ jobs:
             type=ref,event=branch
             type=sha,format=short
 
+      # Erst lokal bauen und wirklich starten. Ein Image, das nie lief, ist
+      # unbewiesen — und ein kaputtes soll gar nicht erst in der Registry landen.
+      - name: Test-Image bauen (amd64, lokal ladbar)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: pklnx-space:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Container starten und durchmessen
+        run: |
+          set -euo pipefail
+          docker run -d --name smoke -p 127.0.0.1:8080:8080 pklnx-space:test
+
+          echo "::group::Auf healthy warten"
+          for _ in $(seq 60); do
+            status=$(docker inspect -f '{{.State.Health.Status}}' smoke)
+            [ "$status" = healthy ] && break
+            [ "$status" = unhealthy ] && { docker logs smoke; exit 1; }
+            sleep 1
+          done
+          test "$(docker inspect -f '{{.State.Health.Status}}' smoke)" = healthy \
+            || { echo "Container wurde nicht healthy"; docker logs smoke; exit 1; }
+          echo "::endgroup::"
+
+          # Laeuft als nicht-root? Sonst waere die ganze /tmp-Umbiegung sinnlos.
+          test "$(docker exec smoke id -un)" = nginx
+          echo "user: $(docker exec smoke id -un) (uid $(docker exec smoke id -u))"
+
+          # Ausgeliefertes Byte-fuer-Byte identisch zur Datei im Repo?
+          curl -fsS http://127.0.0.1:8080/ -o served.html
+          diff -q served.html index.html
+
+          # Die CSP muss ankommen — sie ist die Durchsetzung der Null-Requests-Regel.
+          curl -fsS -D headers.txt -o /dev/null http://127.0.0.1:8080/
+          grep -qi '^content-security-policy:.*default-src .none.' headers.txt
+          grep -qi '^x-content-type-options: nosniff' headers.txt
+
+          # Es gibt genau eine Seite; alles andere ist ein Tippfehler.
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/nope)" = 404
+
+          echo "Smoke-Test bestanden"
+          docker rm -f smoke
+
       - name: Bauen und pushen
         uses: docker/build-push-action@v6
         with:

@@ -1,0 +1,6 @@
+# Whitelist: der Build-Context enthaelt nur, was das Image wirklich braucht.
+# So landen weder .git noch README im Kontext, und ein neu hinzugefuegtes File
+# schleicht sich nicht versehentlich ins Image.
+*
+!index.html
+!nginx.conf

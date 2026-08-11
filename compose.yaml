@@ -1,0 +1,30 @@
+services:
+  web:
+    build: .
+    image: ghcr.io/pklnx/hermes:latest
+    container_name: pklnx-space
+    restart: unless-stopped
+
+    # Nur auf dem Loopback erreichbar — der Reverse Proxy auf dem Host leitet
+    # hierher weiter. Ohne die 127.0.0.1-Bindung waere der Container am
+    # oeffentlichen Interface offen und wuerde die TLS-Terminierung umgehbar machen.
+    ports:
+      - "127.0.0.1:8080:8080"
+
+    # Haerten: nichts am Dateisystem muss zur Laufzeit beschrieben werden.
+    # nginx schreibt pid und Temp-Dateien nach /tmp (siehe nginx.conf), Caches
+    # nach /var/cache/nginx — beides liegt hier im RAM statt im Image.
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

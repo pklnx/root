@@ -142,3 +142,9 @@ covers the favicon. Scripts are forbidden entirely — inline ones too.
 
 If you extend the page and see a CSP violation in the browser console, you broke the
 consent-free operation, you did not misconfigure the CSP.
+
+## License
+
+Proprietary — see [`LICENSE`](LICENSE). Copyright (c) 2026 Patrick Klein, all rights
+reserved. Nothing in this repository may be used, copied, or redistributed without prior
+written permission.

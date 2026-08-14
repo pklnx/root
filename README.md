@@ -85,6 +85,34 @@ Prebuilt images are published on every push to the default branch as
 docker pull ghcr.io/pklnx/root:latest
 ```
 
+### Keeping the container current
+
+The page changes rarely; nginx and the Alpine packages inside the image do not.
+The same workflow therefore also runs **every Monday at 04:00 UTC** and rebuilds
+the unchanged commit. The image is pure `COPY` on top of an unpinned
+`nginx:alpine`, so that rebuild picks up patches and new minors alike — with the
+smoke test in front of it, so a base image that broke something never reaches
+the registry. `pull: true` on the build steps is what makes this work at all;
+without it Buildx would reuse the cached base layer.
+
+`.github/dependabot.yml` keeps the workflow's own actions from ageing out. It
+has no `docker` entry on purpose — an unpinned tag has nothing to bump. Those
+PRs also keep the schedule alive: GitHub disables scheduled workflows after 60
+days without repository activity. A manual run (`workflow_dispatch`) resets that
+clock if it ever comes to it.
+
+Two things to know when operating this:
+
+- **Roll back to a date tag, not a `sha-` tag.** Images are tagged `latest`,
+  `<YYYYMMDD>` and `sha-<commit>`; a scheduled rebuild builds the same commit
+  again and overwrites its `sha-` tag with a newer nginx, so only the date tag
+  identifies one particular image over time.
+- **The rebuild updates the registry, not the server.** Something on the host
+  still has to `docker compose pull && docker compose up -d` — a systemd timer,
+  an update watcher such as DIUN, or a manual pull. An idle rebuild is
+  bit-identical on purpose (`org.opencontainers.image.created` is pinned to the
+  commit date), so such a watcher only fires when the base image really moved.
+
 A few decisions that need explaining in operation:
 
 - **Port 8080, not 80.** The container runs as non-root (`USER nginx`), and unprivileged

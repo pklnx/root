@@ -94,7 +94,7 @@ jobs:
       # Build locally and actually run it first. An image that never ran is
       # unproven — and a broken one should not reach the registry at all.
       - name: Build test image (amd64, loadable)
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           load: true
@@ -148,7 +148,7 @@ jobs:
           docker rm -f smoke
 
       - name: Build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           # Only main/tags need arm64; on a PR one architecture is enough to

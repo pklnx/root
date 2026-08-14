@@ -136,10 +136,30 @@ jobs:
           # The liveness endpoint the HEALTHCHECK probes.
           test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/healthz)" = 200
 
+          # The page sets its type in a self-hosted font: every weight it asks
+          # for has to be there, byte-for-byte and as font/woff2. A missing file
+          # here means visitors silently fall back to the system monospace.
+          weights=$(grep -o 'jetbrains-mono-[0-9]\+\.woff2' index.html | sort -u)
+          test -n "$weights"
+          for file in $weights; do
+            curl -fsS -D font-headers.txt "http://127.0.0.1:8080/fonts/$file" -o served.woff2
+            diff -q served.woff2 "fonts/$file"
+            grep -qi '^content-type: font/woff2' font-headers.txt
+          done
+
+          # The OFL requires the licence to travel with the font.
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/fonts/OFL.txt)" = 200
+
           # The CSP has to arrive — it is what enforces the no-external-requests rule.
           curl -fsS -D headers.txt -o /dev/null http://127.0.0.1:8080/
           grep -qi '^content-security-policy:.*default-src .none.' headers.txt
+          grep -qi "^content-security-policy:.*font-src 'self'" headers.txt
           grep -qi '^x-content-type-options: nosniff' headers.txt
+
+          # And no font host may sneak back into the page: a <link> to Google
+          # Fonts would load fine in the browser's eyes but hand every visitor's
+          # IP to a third party, which is the thing self-hosting exists to stop.
+          ! grep -Eqi 'fonts\.(googleapis|gstatic)\.com' index.html
 
           # There is exactly one page; anything else is a typo.
           test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/nope)" = 404

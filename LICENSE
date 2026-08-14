@@ -12,4 +12,10 @@ written permission of the copyright holder.
 No license or other rights are granted, whether by implication, estoppel, or
 otherwise. All rights not expressly granted in writing are reserved.
 
+Third-party material, excluded from the above: the files in fonts/ are
+JetBrains Mono, Copyright 2020 The JetBrains Mono Project Authors
+(https://github.com/JetBrains/JetBrainsMono), licensed under the SIL Open Font
+License, Version 1.1. Their terms are those of fonts/OFL.txt, not of this
+license.
+
 The software and content are provided "as is", without warranty of any kind.

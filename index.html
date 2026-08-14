@@ -11,9 +11,13 @@
 
 <!-- The typeface is served from this origin, never from fonts.googleapis.com:
      an external font request would hand the visitor's IP to a third party and
-     cost the site its consent-free operation. Both weights the first paint
-     needs are preloaded; 500 is small and only used further down the page. -->
+     cost the site its consent-free operation. All three weights are preloaded:
+     every one of them is on screen in the first viewport, and without the hint
+     the browser only finds them once it has parsed the CSS that asks for them —
+     which is one swap-flash per weight. Keep this list and the @font-face rules
+     below in step; a preload nobody uses is a wasted download. -->
 <link rel="preload" href="/fonts/jetbrains-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/jetbrains-mono-500.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
 <style>
   /* JetBrains Mono — © 2020 The JetBrains Mono Project Authors,
@@ -49,7 +53,7 @@
     --fg:        #d9d4c8;
     --bright:    #f4f1ea;
     --dim:       #a49f97;
-    --muted:     #7c776f;
+    --muted:     #918b82;  /* the dimmest tone, and the one on 12 px text: 5.9:1 */
     --accent:    #ff4b33;
     --rule:      #1c1c20;
     --rule-soft: #141418;
@@ -221,7 +225,9 @@
 
 <header>
   <span class="wordmark">pklnx</span>
-  <span class="eyebrow">infrastructure &amp; cloud engineering</span>
+  <!-- Hidden from assistive technology: it repeats the tagline two rows below
+       word for word, and a screen reader would read the line out twice. -->
+  <span class="eyebrow" aria-hidden="true">infrastructure &amp; cloud engineering</span>
 </header>
 
 <main>

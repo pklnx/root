@@ -54,15 +54,18 @@ LICENSE             Proprietary, all rights reserved
 
 Design tokens live in the `:root` CSS variables in `index.html`
 (`--bg #08080a`, `--fg #d9d4c8`, `--bright #f4f1ea`, `--dim #a49f97`,
-`--muted #7c776f`, `--accent #ff4b33`, `--rule #1c1c20`, `--rule-soft #141418`,
+`--muted #918b82`, `--accent #ff4b33`, `--rule #1c1c20`, `--rule-soft #141418`,
 `--hover #0e0e12`, plus `--mono`). Reuse those variables; don't hardcode colors.
 
 Dark and reduced by intent — a terminal read as a business card: a hairline-ruled
 header, the wordmark set large with a blinking caret in signal red, and the
 service list under an `$ ls ./services` prompt against a vertical rule. All
-dimmed text keeps roughly 6:1 contrast against the background — comfortably above
-the 4.5:1 WCAG asks for, because a too-dark grey is the easy mistake in a layout
-like this.
+dimmed text keeps at least 5.9:1 contrast against the background — comfortably
+above the 4.5:1 WCAG asks for, because a too-dark grey is the easy mistake in a
+layout like this. `--muted` is the floor of that range and the one token that
+carries 12 px text (eyebrow, footer, the service role), so measure it against
+`--bg` before darkening it — a warmer grey that merely *looks* the same as the
+one before it can land straight on the 4.5:1 line.
 
 Two things that look optional and are not: the caret's animation is switched off
 under `prefers-reduced-motion: reduce` (a blinking element is what that

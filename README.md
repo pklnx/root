@@ -47,10 +47,11 @@ set large with a blinking caret in signal red, and the service list printed unde
 `$ ls ./services` prompt against a vertical rule.
 
 Colors live as CSS custom properties in `:root` (`--bg #08080a`, `--fg #d9d4c8`,
-`--bright #f4f1ea`, `--dim #a49f97`, `--muted #7c776f`, `--accent #ff4b33`, plus the rule
-greys) — reuse those instead of hardcoding values. All dimmed text reaches roughly 6:1
+`--bright #f4f1ea`, `--dim #a49f97`, `--muted #918b82`, `--accent #ff4b33`, plus the rule
+greys) — reuse those instead of hardcoding values. All dimmed text reaches at least 5.9:1
 contrast against the background, comfortably above the 4.5:1 WCAG requires — in dark,
-reduced layouts a too-dark grey is the easiest mistake to make.
+reduced layouts a too-dark grey is the easiest mistake to make. `--muted` is the floor and
+the only token on 12 px text, so measure it against `--bg` before darkening it.
 
 The caret is the one moving part, and `prefers-reduced-motion: reduce` stops it: a blinking
 element is precisely what that preference is about. The header eyebrow is dropped below

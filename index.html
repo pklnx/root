@@ -49,7 +49,7 @@
     --fg:        #d9d4c8;
     --bright:    #f4f1ea;
     --dim:       #a49f97;
-    --muted:     #7c776f;
+    --muted:     #918b82;  /* the dimmest tone, and the one on 12 px text: 5.9:1 */
     --accent:    #ff4b33;
     --rule:      #1c1c20;
     --rule-soft: #141418;
@@ -221,7 +221,9 @@
 
 <header>
   <span class="wordmark">pklnx</span>
-  <span class="eyebrow">infrastructure &amp; cloud engineering</span>
+  <!-- Hidden from assistive technology: it repeats the tagline two rows below
+       word for word, and a screen reader would read the line out twice. -->
+  <span class="eyebrow" aria-hidden="true">infrastructure &amp; cloud engineering</span>
 </header>
 
 <main>

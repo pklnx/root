@@ -7,5 +7,10 @@
 # The site
 !index.html
 
+# The self-hosted webfont and the licence text that has to ship with it.
+# Its README documents where the files come from and stays out of the image.
+!fonts/
+fonts/README.md
+
 # Build inputs that are not published
 !docker/

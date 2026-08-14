@@ -39,6 +39,7 @@ Dockerfile          Container image: nginx + that one file (no build step)
 docker/nginx.conf   nginx config (unprivileged, security headers, IP-free access log)
 docker-compose.yml  Runs the container on the server
 .github/workflows/docker.yml   Builds, smoke-tests and pushes the image to GHCR (the only deploy)
+.github/dependabot.yml         Keeps the workflow's actions current (see "Staying current")
 README.md           Human-facing documentation of the same ground
 LICENSE             Proprietary, all rights reserved
 ```
@@ -99,7 +100,9 @@ such content silently.
 ## Hosting & deployment
 
 **The container image is the only deploy path.** Every push to `main` builds,
-smoke-tests and publishes it; there is no Pages deploy and no second path.
+smoke-tests and publishes it; there is no Pages deploy and no second path. A
+**weekly schedule rebuilds the unchanged commit** so the page keeps serving a
+patched nginx even when nobody edits it — see "Staying current" below.
 
 ### Without a container
 
@@ -120,12 +123,14 @@ curl -I http://127.0.0.1:8080/
   minor can land unannounced — the CI smoke test is what catches it. Pin to a
   minor (`nginx:1.30-alpine`) only if a build ever has to be reproducible.
 - **Published to GHCR** by `.github/workflows/docker.yml` on every push to
-  `main` (amd64 + arm64), tagged `latest` and `sha-<commit>`:
+  `main` (amd64 + arm64), tagged `latest`, `<YYYYMMDD>` and `sha-<commit>`:
   `ghcr.io/pklnx/root:latest`. The image name is derived from
   `github.repository`, so it follows a repository rename automatically. The
-  server only needs `docker compose pull && docker compose up -d`; rolling back
-  means pinning a `sha-` tag. Pull requests build and smoke-test the image but
-  do not push it.
+  server only needs `docker compose pull && docker compose up -d`. **Roll back
+  to a date tag, not a `sha-` tag:** a scheduled rebuild builds the same commit
+  again and overwrites its `sha-` tag with a newer nginx, so that tag does not
+  identify one particular image over time. Pull requests build and smoke-test
+  the image but do not push it.
 - **Unprivileged by design:** runs as the `nginx` user on port **8080**,
   read-only root filesystem, all capabilities dropped, `no-new-privileges`.
   Port 8080 rather than 80 because non-root may not bind below 1024. Everything
@@ -152,6 +157,35 @@ curl -I http://127.0.0.1:8080/
 - `add_header` is **not** inherited additively: the moment a `location` block
   sets its own `add_header`, every header from the `server` block is dropped for
   that block. That is why they all live in the `server` block.
+
+### Staying current
+
+The site's own content barely changes; the software in the container does. Three
+pieces keep that from rotting, and they only work together:
+
+- **`schedule: '0 4 * * 1'`** in `.github/workflows/docker.yml` rebuilds the
+  unchanged commit every Monday. Because the base tag is unpinned, that picks up
+  nginx patches *and* new minors — and the smoke test runs first, so a base
+  image that broke something never reaches the registry.
+- **`pull: true`** on both build steps. Without it Buildx reuses the cached base
+  layer and the schedule accomplishes nothing. Both steps need it: otherwise CI
+  would smoke-test a cached base and publish a freshly pulled one.
+- **`.github/dependabot.yml`** keeps the workflow's own actions from ageing out.
+  There is no `docker` entry on purpose — an unpinned tag has nothing to bump.
+  Its side effect matters too: GitHub disables scheduled workflows after 60 days
+  without repository activity, and those PRs are what keep the Monday run alive.
+  If they ever dry up, one `workflow_dispatch` run resets the clock.
+
+Two consequences worth remembering:
+
+- `org.opencontainers.image.created` is pinned to the **commit** date rather
+  than the build time, so an idle rebuild is bit-identical and does not change
+  the manifest digest. That is what lets an update watcher (DIUN and friends)
+  treat a notification as "the base image actually moved". Don't let
+  `metadata-action` stamp the build time back in.
+- The rebuild updates the registry, **not the server**. Something on the host
+  still has to run `docker compose pull && docker compose up -d` — a systemd
+  timer, DIUN, or a manual pull.
 
 ### Content Security Policy
 

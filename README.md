@@ -4,7 +4,7 @@ Static business-card landing page for the domain `pklnx.space`. Private use only
 commercial use, no services offered — it names the private services running on the domain
 and nothing else.
 
-The site is `index.html` plus the self-hosted webfont in `fonts/`. No build step.
+The site is `index.html` plus the self-hosted webfonts in `fonts/`. No build step.
 
 ## Hard constraint: zero external requests
 
@@ -28,8 +28,8 @@ The page says very little on purpose:
 
 | Element   | Text                                            |
 |-----------|-------------------------------------------------|
-| Header    | `pklnx` · `infrastructure & cloud engineering`  |
-| Wordmark  | `pklnx` with a blinking terminal caret          |
+| Header    | logo mark · `infrastructure & cloud engineering` |
+| Wordmark  | `pklnx★space` inside the space-bar bracket      |
 | Tagline   | `infrastructure & cloud engineering.`           |
 | Services  | `$ ls ./services` → `hermes` · `mail server` · `hermes.pklnx.space` |
 | Footer    | `pklnx.space`                                   |
@@ -42,38 +42,62 @@ That distinction is what keeps the page out of § 5 DDG's imprint duty; see "Leg
 
 ## Design
 
-Dark and reduced, a terminal read as a business card: a hairline-ruled header, the wordmark
-set large with a blinking caret in signal red, and the service list printed under an
-`$ ls ./services` prompt against a vertical rule.
+Dark and reduced, a terminal read as a business card, in the pklnx.space brand: a
+hairline-ruled header with the logo mark, the wordmark set large, and the service list
+printed under an `$ ls ./services` prompt against a vertical rule.
 
-Colors live as CSS custom properties in `:root` (`--bg #08080a`, `--fg #d9d4c8`,
-`--bright #f4f1ea`, `--dim #a49f97`, `--muted #918b82`, `--accent #ff4b33`, plus the rule
-greys) — reuse those instead of hardcoding values. All dimmed text reaches at least 5.9:1
-contrast against the background, comfortably above the 4.5:1 WCAG requires — in dark,
-reduced layouts a too-dark grey is the easiest mistake to make. `--muted` is the floor and
-the only token on 12 px text, so measure it against `--bg` before darkening it.
+### The logo
 
-The caret is the one moving part, and `prefers-reduced-motion: reduce` stops it: a blinking
-element is precisely what that preference is about. The header eyebrow is dropped below
-40 rem, where tracked-out uppercase no longer fits beside the wordmark and the tagline says
-the same thing one row below anyway.
+The wordmark is `pklnx` (Space Mono Bold), a four-pointed star standing in for the dot,
+`space` (Space Mono Regular), all sitting inside the bracket of the space-bar symbol ␣:
+"space" said twice, once as a word and once as a glyph. The mark — used in the header and
+the favicon — is the bracket with the star alone. Both are inline SVG paths, converted from
+the typeface once, so the logo renders identically before, after and without the webfont.
+They are colored through two CSS classes, `.ink` and `.star`, never with hardcoded fills.
+The favicon is the same mark on a dark tile, inlined as a `data:` URI.
 
-Earlier drafts (a centred variant and a grid-backdrop one) are no longer in the working tree
+### Tokens
+
+Colors live as CSS custom properties in `:root`, taken from the pklnx.space design system
+(dark theme): `--ground #08080a`, `--surface #111114`, `--line #2c2c31`,
+`--line-soft #1a1a1e`, `--ink #f3f1ec`, `--ink-muted #a3a09a`, `--star #ff5a36`,
+`--star-ink #ff7a5c`. Reuse those instead of hardcoding values. `--star` is the only accent
+and appears in exactly two places: the star in the logo and the `$` sigil. Links take
+`--star-ink`, its lighter text variant. All dimmed text is `--ink-muted` at 7.7:1 against
+the background, comfortably above the 4.5:1 WCAG requires — the design system's fainter
+grey (5.7:1) is deliberately not used here, because the page keeps every dimmed text above
+5.9:1.
+
+Nothing on the page moves. The header eyebrow is dropped below 40 rem, where tracked-out
+uppercase no longer fits beside the mark and the tagline says the same thing one row below
+anyway.
+
+Earlier drafts (a centred variant, a grid-backdrop one and the JetBrains Mono version with a
+blinking caret) are no longer in the working tree
 but remain reachable through the git history.
 
 ## Typeface
 
-The page is set in **JetBrains Mono**, served from this origin out of `fonts/` — never from
+Two faces, both served from this origin out of `fonts/` — never from
 `fonts.googleapis.com`, which would hand every visitor's IP address to a third party and
-cost the site its consent-free operation.
+cost the site its consent-free operation:
 
-> JetBrains Mono — © 2020 The JetBrains Mono Project Authors,
-> <https://www.jetbrains.com/lp/mono/>, licensed under the SIL Open Font License 1.1.
+- **Space Mono** (400, 700) for everything monospaced: eyebrow, prompt, service list,
+  footer.
+- **IBM Plex Sans** (400) for the tagline, the one line of prose.
 
-The licence text ships with the font (`fonts/OFL.txt`, served at `/fonts/OFL.txt`) because
-the OFL requires it to travel with the files. Three weights (400, 500, 700), subset to
-Latin, ~15 KB each. [`fonts/README.md`](fonts/README.md) documents the upstream version and
-the exact command that produced them.
+> Space Mono — © 2016 The Space Mono Project Authors,
+> <https://github.com/googlefonts/spacemono>, licensed under the SIL Open Font License 1.1.
+>
+> IBM Plex Sans — © 2017 IBM Corp., Reserved Font Name "Plex",
+> <https://github.com/IBM/plex>, licensed under the SIL Open Font License 1.1.
+
+Each licence text ships with its font (`fonts/OFL-SpaceMono.txt`, `fonts/OFL-IBMPlex.txt`,
+served under `/fonts/`) because the OFL requires it to travel with the files. Space Mono is
+subset to Latin (~15 KB per weight). IBM Plex Sans is IBM's own Latin1 split file, unmodified
+(~21 KB): its Reserved Font Name means a subset we made ourselves could not keep the name.
+About 50 KB for the page in total. [`fonts/README.md`](fonts/README.md) documents the
+upstream versions and the exact commands.
 
 ## Deployment
 
@@ -161,7 +185,7 @@ A few decisions that need explaining in operation:
 Before publishing, CI builds the image, starts it with the same `--read-only --tmpfs /tmp`
 hardening the compose file uses, and checks that it becomes healthy, runs as `nginx` rather
 than root, serves `index.html` byte-for-byte, delivers every font weight the page asks for
-byte-for-byte as `font/woff2` alongside `OFL.txt`, answers `/healthz` with a 200, sends the
+byte-for-byte as `font/woff2` alongside both OFL licence texts, answers `/healthz` with a 200, sends the
 CSP, and answers everything else with a 404. It also fails if a Google Fonts host reappears
 in `index.html`. Pull requests run the same build and smoke test but push nothing, so a
 broken image never reaches the registry.
@@ -221,8 +245,8 @@ necessary in the same change.
 ## License
 
 The site's own code and content are proprietary — see [`LICENSE`](LICENSE). The typeface in
-`fonts/` is not: it is JetBrains Mono under the SIL Open Font License 1.1 (`fonts/OFL.txt`)
-and keeps its own terms.
+`fonts/` is not: Space Mono and IBM Plex Sans are under the SIL Open Font License 1.1
+(`fonts/OFL-SpaceMono.txt`, `fonts/OFL-IBMPlex.txt`) and keep their own terms.
 
 Copyright (c) 2026 Patrick Klein, all rights reserved. Nothing else in this repository may
 be used, copied, or redistributed without prior written permission.

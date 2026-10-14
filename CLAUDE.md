@@ -17,7 +17,7 @@ an offering. That is a deliberate scope, not an unfinished state — see
 ## Tech stack & constraints
 
 - **One HTML file with inline CSS. No build step, no framework, no
-  dependencies, no JavaScript.** The site is `index.html` plus the webfont in
+  dependencies, no JavaScript.** The site is `index.html` plus the webfonts in
   `fonts/`.
 - Do **not** introduce bundlers, npm packages, CSS frameworks, or client-side
   JS unless explicitly requested. Keep it a zero-dependency static page.
@@ -25,8 +25,9 @@ an offering. That is a deliberate scope, not an unfinished state — see
   analytics, no external images, no `<script>`. That is what lets the page run
   without a consent banner. Concretely:
   - CSS stays inline in `<style>` — no `@import`, no `<link rel="stylesheet">`
-  - one typeface, **self-hosted out of `fonts/`** (see "Typeface"), with a
-    system monospace stack behind it as fallback. Never a
+  - two typefaces, Space Mono and IBM Plex Sans, **self-hosted out of
+    `fonts/`** (see "Typeface"), each with a system stack behind it as
+    fallback. Never a
     `fonts.googleapis.com` link — that is the exact thing this rule exists to
     prevent, and CI fails if one reappears.
   - graphics only as inline SVG or CSS gradient; the favicon is a `data:` URI,
@@ -41,7 +42,7 @@ an offering. That is a deliberate scope, not an unfinished state — see
 
 ```
 index.html          The entire site (markup + inline CSS)
-fonts/              Self-hosted JetBrains Mono (3 weights) + OFL.txt + provenance README
+fonts/              Self-hosted Space Mono (2 weights) + IBM Plex Sans (1) + one OFL-*.txt each + provenance README
 Dockerfile          Container image: nginx + that one file (no build step)
 .dockerignore       Allow-list — only index.html, fonts/ and docker/ reach the image
 docker/nginx.conf   nginx config (unprivileged, security headers, IP-free access log)
@@ -52,47 +53,62 @@ README.md           Human-facing documentation of the same ground
 LICENSE             Proprietary, all rights reserved
 ```
 
-Design tokens live in the `:root` CSS variables in `index.html`
-(`--bg #08080a`, `--fg #d9d4c8`, `--bright #f4f1ea`, `--dim #a49f97`,
-`--muted #918b82`, `--accent #ff4b33`, `--rule #1c1c20`, `--rule-soft #141418`,
-`--hover #0e0e12`, plus `--mono`). Reuse those variables; don't hardcode colors.
+Design tokens live in the `:root` CSS variables in `index.html` and come from
+the pklnx.space design system, dark theme (`--ground #08080a`,
+`--surface #111114`, `--line #2c2c31`, `--line-soft #1a1a1e`, `--ink #f3f1ec`,
+`--ink-muted #a3a09a`, `--star #ff5a36`, `--star-ink #ff7a5c`, plus `--mono` and
+`--sans`). Reuse those variables; don't hardcode colors. `--star` is the only
+accent and appears in exactly two places, the star in the logo and the `$`
+sigil; links use `--star-ink`.
 
 Dark and reduced by intent — a terminal read as a business card: a hairline-ruled
-header, the wordmark set large with a blinking caret in signal red, and the
-service list under an `$ ls ./services` prompt against a vertical rule. All
-dimmed text keeps at least 5.9:1 contrast against the background — comfortably
-above the 4.5:1 WCAG asks for, because a too-dark grey is the easy mistake in a
-layout like this. `--muted` is the floor of that range and the one token that
-carries 12 px text (eyebrow, footer, the service role), so measure it against
-`--bg` before darkening it — a warmer grey that merely *looks* the same as the
-one before it can land straight on the 4.5:1 line.
+header with the logo mark, the wordmark set large, and the service list under an
+`$ ls ./services` prompt against a vertical rule. All dimmed text keeps at least
+5.9:1 contrast against the background — comfortably above the 4.5:1 WCAG asks
+for, because a too-dark grey is the easy mistake in a layout like this.
+`--ink-muted` (7.7:1) is the only dimmed token and carries the 12 px text
+(eyebrow, footer). The design system's fainter `ink-faint` (5.7:1) is
+deliberately left out for that reason.
 
-Two things that look optional and are not: the caret's animation is switched off
-under `prefers-reduced-motion: reduce` (a blinking element is what that
-preference is for), and `header, main, footer { min-width: 0 }` keeps the grid
-items from widening the page past a phone viewport — without it the header
-eyebrow alone produces a horizontal scrollbar. That eyebrow is hidden below
-40 rem for the same reason.
+**The logo is inline SVG, not text.** The wordmark (`pklnx`, a star as the dot,
+`space`, inside the bracket of the space-bar symbol ␣) and the mark (bracket +
+star) are paths converted once from Space Mono, so they render the same with or
+without the webfont. Their fills come only from the `.ink` and `.star` classes.
+Do not retype the wordmark as live text or redraw the paths by hand; take them
+from the design system's logo files. The favicon is the mark on a `--ground`
+tile as a `data:` URI.
 
-Earlier drafts (a centred variant and one with a gradient grid backdrop) are out
-of the working tree but reachable through the git history.
+One thing that looks optional and is not: `header, main, footer { min-width: 0 }`
+keeps the grid items from widening the page past a phone viewport — without it
+the header eyebrow alone produces a horizontal scrollbar. That eyebrow is hidden
+below 40 rem for the same reason. Nothing on the page animates.
+
+Earlier drafts (a centred variant, one with a gradient grid backdrop, and the
+JetBrains Mono version with a blinking caret) are out of the working tree but
+reachable through the git history.
 
 ## Typeface
 
-The page is set in **JetBrains Mono**, served from this origin out of `fonts/`.
-Loading it from Google Fonts would leak every visitor's IP to a third party and
-break the consent-free operation — that is why `font-src 'self'` is in the CSP.
+The page is set in **Space Mono** (400, 700: eyebrow, prompt, service list,
+footer) and **IBM Plex Sans** (400: the tagline), both served from this origin out
+of `fonts/`. Loading them from Google Fonts would leak every visitor's IP to a
+third party and break the consent-free operation — that is why `font-src 'self'`
+is in the CSP.
 
-Credit belongs in the page source and in the docs: *JetBrains Mono, © 2020 The
-JetBrains Mono Project Authors (<https://www.jetbrains.com/lp/mono/>), SIL Open
-Font License 1.1*. `fonts/OFL.txt` is copied into the image and served at
-`/fonts/OFL.txt` because the OFL requires the licence to travel with the font —
-don't drop it from the image to save two kilobytes.
+Credit belongs in the page source and in the docs: *Space Mono, © 2016 The Space
+Mono Project Authors (<https://github.com/googlefonts/spacemono>)* and *IBM Plex
+Sans, © 2017 IBM Corp., Reserved Font Name "Plex" (<https://github.com/IBM/plex>)*,
+both SIL Open Font License 1.1. `fonts/OFL-SpaceMono.txt` and
+`fonts/OFL-IBMPlex.txt` are copied into the image and served under `/fonts/`
+because the OFL requires the licence to travel with each font — don't drop them
+from the image to save a few kilobytes.
 
-Three weights only (400 body, 500 the `$` sigil, 700 wordmark), subset to Latin,
-~15 KB each. `fonts/README.md` records the upstream version and the exact
-`pyftsubset` command; regenerate rather than hand-edit, and re-run it if the copy
-ever grows a character outside the Latin range (`→` is already covered).
+Space Mono is subset to Latin, ~15 KB per weight. **IBM Plex Sans is not subset
+by us:** its Reserved Font Name "Plex" means a modified file could not keep the
+name, so the page ships IBM's own `IBMPlexSans-Regular-Latin1.woff2`, unmodified.
+`fonts/README.md` records the upstream versions and the exact commands;
+regenerate rather than hand-edit. The service row's arrow is now an inline SVG
+icon, so no glyph outside the Latin range is needed.
 
 ## Content
 
@@ -100,8 +116,8 @@ The page says very little on purpose:
 
 | Element  | Text                                                    |
 |----------|---------------------------------------------------------|
-| Header   | `pklnx` · eyebrow `infrastructure & cloud engineering`  |
-| Wordmark | `pklnx` + blinking caret                                |
+| Header   | logo mark · eyebrow `infrastructure & cloud engineering` |
+| Wordmark | `pklnx★space` in the space-bar bracket (inline SVG)     |
 | Tagline  | `infrastructure & cloud engineering.`                   |
 | Services | `$ ls ./services` → `hermes` · `mail server` · `hermes.pklnx.space` |
 | Footer   | `pklnx.space`                                           |
@@ -198,7 +214,7 @@ curl -I http://127.0.0.1:8080/
   separate endpoint keeps health traffic out of the page's access log and out of
   the five-minute caching rule.
 - **There is exactly one page.** `location = /` serves `index.html`, `^~ /fonts/`
-  serves the webfont and `OFL.txt`, everything else returns 404 — which is also
+  serves the webfonts and their `OFL-*.txt` licences, everything else returns 404 — which is also
   why no explicit dotfile deny is needed. The fonts block spells its MIME types
   out in a `types` block, so a base image without `woff2` in `mime.types` cannot
   turn the font into an octet-stream; note that a `types` block *replaces* the
@@ -265,8 +281,8 @@ broken — not that the CSP is misconfigured.
 Before publishing, CI builds the image, starts it with the same
 `--read-only --tmpfs /tmp` hardening the compose file uses, and asserts that it
 becomes healthy, runs as `nginx` rather than root, serves `index.html`
-byte-for-byte, delivers every `jetbrains-mono-*.woff2` the page references
-byte-for-byte as `font/woff2` plus `/fonts/OFL.txt`, answers `/healthz` with 200,
+byte-for-byte, delivers every `/fonts/*.woff2` the page references
+byte-for-byte as `font/woff2` plus both `OFL-*.txt` licences, answers `/healthz` with 200,
 sends the CSP (including `font-src 'self'`) and `X-Content-Type-Options`, and
 answers everything else with 404. It also greps `index.html` for a Google Fonts
 host and fails if one is back. **Any change to `index.html`, `fonts/`,
@@ -285,8 +301,7 @@ not drift.
 No test suite. Opening `index.html` from the filesystem works, but the font is
 referenced by absolute path (`/fonts/…`) and will not load that way — serve the
 directory instead, e.g. `python3 -m http.server 8099`, and take headless
-screenshots (Chromium is available). Check desktop and mobile widths, and check
-`prefers-reduced-motion` if the caret animation is touched.
+screenshots (Chromium is available). Check desktop and mobile widths.
 
 Headless Chromium's `--window-size` enforces a minimum viewport of about 500 px
 and simply crops the screenshot below that, so a narrow render made that way is
@@ -303,8 +318,9 @@ editing `docker/nginx.conf`, syntax-check it with
 ## License
 
 This is **proprietary, all-rights-reserved** software/content (see `LICENSE`) —
-with the single exception of `fonts/`, which is JetBrains Mono under the SIL Open
-Font License 1.1 and keeps its own terms (`fonts/OFL.txt`).
+with the single exception of `fonts/`, which holds Space Mono and IBM Plex Sans
+under the SIL Open Font License 1.1 and keeps their own terms
+(`fonts/OFL-SpaceMono.txt`, `fonts/OFL-IBMPlex.txt`).
 It is **not** open source — do not add an open-source license or public-domain
 dedication, and do not reuse the code/content elsewhere without the owner's
 written permission.

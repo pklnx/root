@@ -25,9 +25,9 @@ COPY docker/nginx.conf /etc/nginx/nginx.conf
 # LICENSE, workflows, git metadata) out of the web root.
 COPY index.html /usr/share/nginx/html/index.html
 
-# The webfont the page sets its type in, served from this origin instead of
-# Google Fonts so no visitor request ever leaves the site. OFL.txt goes along
-# with it because the licence requires it to accompany the font — it has to be
+# The webfonts the page sets its type in, served from this origin instead of
+# Google Fonts so no visitor request ever leaves the site. The OFL-*.txt files go along
+# with them because the licence requires it to accompany each font — it has to be
 # in what the server hands out, not just in the repository.
 COPY fonts/ /usr/share/nginx/html/fonts/
 

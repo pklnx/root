@@ -25,8 +25,8 @@ an offering. That is a deliberate scope, not an unfinished state — see
   analytics, no external images, no `<script>`. That is what lets the page run
   without a consent banner. Concretely:
   - CSS stays inline in `<style>` — no `@import`, no `<link rel="stylesheet">`
-  - two typefaces, Space Mono and IBM Plex Sans, **self-hosted out of
-    `fonts/`** (see "Typeface"), each with a system stack behind it as
+  - two typefaces, IBM Plex Mono and IBM Plex Sans, **self-hosted out of
+    `fonts/`** (see "Typeface"), each with Carbon's system stack behind it as
     fallback. Never a
     `fonts.googleapis.com` link — that is the exact thing this rule exists to
     prevent, and CI fails if one reappears.
@@ -42,7 +42,7 @@ an offering. That is a deliberate scope, not an unfinished state — see
 
 ```
 index.html          The entire site (markup + inline CSS)
-fonts/              Self-hosted Space Mono (2 weights) + IBM Plex Sans (1) + one OFL-*.txt each + provenance README
+fonts/              Self-hosted IBM Plex Mono (2 weights) + IBM Plex Sans (1) + OFL-IBMPlex.txt + provenance README
 Dockerfile          Container image: nginx + that one file (no build step)
 .dockerignore       Allow-list — only index.html, fonts/ and docker/ reach the image
 docker/nginx.conf   nginx config (unprivileged, security headers, IP-free access log)
@@ -53,62 +53,82 @@ README.md           Human-facing documentation of the same ground
 LICENSE             Proprietary, all rights reserved
 ```
 
-Design tokens live in the `:root` CSS variables in `index.html` and come from
-the pklnx.space design system, dark theme (`--ground #08080a`,
-`--surface #111114`, `--line #2c2c31`, `--line-soft #1a1a1e`, `--ink #f3f1ec`,
-`--ink-muted #a3a09a`, `--star #ff5a36`, `--star-ink #ff7a5c`, plus `--mono` and
-`--sans`). Reuse those variables; don't hardcode colors. `--star` is the only
-accent and appears in exactly two places, the star in the logo and the `$`
-sigil; links use `--star-ink`.
+**The brand is the pklnx design system** (`pklnx/design-system`): IBM Carbon v11,
+G100 (dark) theme, Purple as the one accent, IBM Plex throughout. The page takes
+its *look* from there (tokens, type scale, spacing, logo, the prompt style) and
+nothing else: no Carbon CSS, no components, no JS, no Carbon class names. The
+design system's voice ("one-person business", „Leistungen", first person, „Sie"
+towards clients) is written for business copy and **does not apply here** — it
+would turn this page into a business telemedium (see "Content & legal rules").
+
+Design tokens live in the `:root` CSS variables in `index.html`, **under their
+Carbon names and G100 values**, and only the ones the page uses:
+`--background #161616`, `--background-hover rgba(141,141,141,.16)` (row hover),
+`--border-subtle-00 #393939` (every rule), `--text-primary #f4f4f4`,
+`--text-secondary #c6c6c6`, `--link-primary #be95ff`, `--link-primary-hover
+#d4bbff`, `--focus #ffffff`, the brand token `--star #a56eff`, Carbon's
+`--spacing-*` steps and the `--font-mono`/`--font-sans` stacks. Reuse those
+variables; don't hardcode colors, and take any further token from the design
+system's `project/tokens.css` (same name, same value) rather than inventing one.
+`--star` is the only accent and appears in exactly two places, the star in the
+logo and the `$` sigil; links use `--link-primary`.
 
 Dark and reduced by intent — a terminal read as a business card: a hairline-ruled
 header with the logo mark, the wordmark set large, and the service list under an
-`$ ls ./services` prompt against a vertical rule. All dimmed text keeps at least
-5.9:1 contrast against the background — comfortably above the 4.5:1 WCAG asks
-for, because a too-dark grey is the easy mistake in a layout like this.
-`--ink-muted` (7.7:1) is the only dimmed token and carries the 12 px text
-(eyebrow, footer). The design system's fainter `ink-faint` (5.7:1) is
-deliberately left out for that reason.
+`$ ls ./services` prompt against a vertical rule. `--text-secondary` (10.6:1) is
+the only dimmed token and carries every dimmed text, the 12 px eyebrow and footer
+included. Carbon's fainter `text-helper` is left out so that stays one rule.
+
+Type follows Carbon's productive scale, set by hand in the CSS (each rule names
+its style in a comment): tagline `body-02`, service name and host `code-02`,
+service role `body-01`, eyebrow `label-01`, footer `code-01`. The prompt is the
+design system's `prompt` style (Plex Mono SemiBold 28 px), its 20 px step below
+40 rem. Per the design system: sans for language, mono for host names, commands
+and the brand; sentence case, never all caps; square corners, no shadows; focus
+2 px `--focus` inside; icons are Carbon icons (32 grid, filled, `currentColor`)
+at 16 px next to text.
 
 **The logo is inline SVG, not text.** The wordmark (`pklnx`, a star as the dot,
 `space`, inside the bracket of the space-bar symbol ␣) and the mark (bracket +
-star) are paths converted once from Space Mono, so they render the same with or
-without the webfont. Their fills come only from the `.ink` and `.star` classes.
-Do not retype the wordmark as live text or redraw the paths by hand; take them
-from the design system's logo files. The favicon is the mark on a `--ground`
-tile as a `data:` URI.
+star) are paths converted from IBM Plex Mono by the design system, so they render
+the same with or without the webfont. Their fills come only from the `.ink` and
+`.star` classes. Do not retype the wordmark as live text or redraw the paths by
+hand; take them from the design system's `project/assets/Logos/` files
+(`pklnx-wordmark-dark.svg`, `pklnx-mark-dark.svg`). The favicon is
+`pklnx-favicon.svg` as a `data:` URI.
 
 One thing that looks optional and is not: `header, main, footer { min-width: 0 }`
 keeps the grid items from widening the page past a phone viewport — without it
 the header eyebrow alone produces a horizontal scrollbar. That eyebrow is hidden
-below 40 rem for the same reason. Nothing on the page animates.
+below 40 rem, where it squeezes the mark and only repeats the tagline. Nothing on
+the page animates.
 
-Earlier drafts (a centred variant, one with a gradient grid backdrop, and the
-JetBrains Mono version with a blinking caret) are out of the working tree but
-reachable through the git history.
+Earlier drafts (a centred variant, one with a gradient grid backdrop, the
+JetBrains Mono version with a blinking caret, and the Space Mono version in
+orange) are out of the working tree but reachable through the git history.
 
 ## Typeface
 
-The page is set in **Space Mono** (400, 700: eyebrow, prompt, service list,
-footer) and **IBM Plex Sans** (400: the tagline), both served from this origin out
-of `fonts/`. Loading them from Google Fonts would leak every visitor's IP to a
-third party and break the consent-free operation — that is why `font-src 'self'`
-is in the CSP.
+The page is set in **IBM Plex Mono** (400: host link, footer; 600: prompt,
+service name) and **IBM Plex Sans** (400: eyebrow, tagline, service role), the
+design system's two faces, both served from this origin out of `fonts/`. Loading
+them from Google Fonts would leak every visitor's IP to a third party and break
+the consent-free operation — that is why `font-src 'self'` is in the CSP.
 
-Credit belongs in the page source and in the docs: *Space Mono, © 2016 The Space
-Mono Project Authors (<https://github.com/googlefonts/spacemono>)* and *IBM Plex
+Credit belongs in the page source and in the docs: *IBM Plex Mono and IBM Plex
 Sans, © 2017 IBM Corp., Reserved Font Name "Plex" (<https://github.com/IBM/plex>)*,
-both SIL Open Font License 1.1. `fonts/OFL-SpaceMono.txt` and
-`fonts/OFL-IBMPlex.txt` are copied into the image and served under `/fonts/`
-because the OFL requires the licence to travel with each font — don't drop them
+SIL Open Font License 1.1. Both families ship the same licence text, so one file,
+`fonts/OFL-IBMPlex.txt`, is copied into the image and served under `/fonts/`
+because the OFL requires the licence to travel with each font — don't drop it
 from the image to save a few kilobytes.
 
-Space Mono is subset to Latin, ~15 KB per weight. **IBM Plex Sans is not subset
-by us:** its Reserved Font Name "Plex" means a modified file could not keep the
-name, so the page ships IBM's own `IBMPlexSans-Regular-Latin1.woff2`, unmodified.
-`fonts/README.md` records the upstream versions and the exact commands;
-regenerate rather than hand-edit. The service row's arrow is now an inline SVG
-icon, so no glyph outside the Latin range is needed.
+**IBM Plex is not subset by us:** its Reserved Font Name "Plex" means a modified
+file could not keep the name, so the page ships IBM's own `-Latin1` split files,
+unmodified (~18 KB per Mono weight, ~21 KB for Sans). `fonts/README.md` records
+the upstream versions and the exact commands; regenerate rather than hand-edit.
+Check any copy edit against the fonts' cmaps: a character outside Latin-1 plus
+common punctuation falls back to a system face. Arrows and other symbols are
+inline SVG icons, not glyphs.
 
 ## Content
 
@@ -116,10 +136,10 @@ The page says very little on purpose:
 
 | Element  | Text                                                    |
 |----------|---------------------------------------------------------|
-| Header   | logo mark · eyebrow `infrastructure & cloud engineering` |
+| Header   | logo mark · eyebrow `Infrastructure & cloud engineering` |
 | Wordmark | `pklnx★space` in the space-bar bracket (inline SVG)     |
-| Tagline  | `infrastructure & cloud engineering.`                   |
-| Services | `$ ls ./services` → `hermes` · `mail server` · `hermes.pklnx.space` |
+| Tagline  | `Infrastructure & cloud engineering.`                   |
+| Services | `$ ls ./services` → `hermes` · `Mail server` · `hermes.pklnx.space` |
 | Footer   | `pklnx.space`                                           |
 
 The tagline appears **three times** in the source: as the header eyebrow, visibly
@@ -214,7 +234,7 @@ curl -I http://127.0.0.1:8080/
   separate endpoint keeps health traffic out of the page's access log and out of
   the five-minute caching rule.
 - **There is exactly one page.** `location = /` serves `index.html`, `^~ /fonts/`
-  serves the webfonts and their `OFL-*.txt` licences, everything else returns 404 — which is also
+  serves the webfonts and their `OFL-IBMPlex.txt` licence, everything else returns 404 — which is also
   why no explicit dotfile deny is needed. The fonts block spells its MIME types
   out in a `types` block, so a base image without `woff2` in `mime.types` cannot
   turn the font into an octet-stream; note that a `types` block *replaces* the
@@ -282,7 +302,7 @@ Before publishing, CI builds the image, starts it with the same
 `--read-only --tmpfs /tmp` hardening the compose file uses, and asserts that it
 becomes healthy, runs as `nginx` rather than root, serves `index.html`
 byte-for-byte, delivers every `/fonts/*.woff2` the page references
-byte-for-byte as `font/woff2` plus both `OFL-*.txt` licences, answers `/healthz` with 200,
+byte-for-byte as `font/woff2` plus the `OFL-IBMPlex.txt` licence, answers `/healthz` with 200,
 sends the CSP (including `font-src 'self'`) and `X-Content-Type-Options`, and
 answers everything else with 404. It also greps `index.html` for a Google Fonts
 host and fails if one is back. **Any change to `index.html`, `fonts/`,
@@ -318,9 +338,9 @@ editing `docker/nginx.conf`, syntax-check it with
 ## License
 
 This is **proprietary, all-rights-reserved** software/content (see `LICENSE`) —
-with the single exception of `fonts/`, which holds Space Mono and IBM Plex Sans
-under the SIL Open Font License 1.1 and keeps their own terms
-(`fonts/OFL-SpaceMono.txt`, `fonts/OFL-IBMPlex.txt`).
+with the single exception of `fonts/`, which holds IBM Plex Mono and IBM Plex
+Sans under the SIL Open Font License 1.1 and keeps their own terms
+(`fonts/OFL-IBMPlex.txt`).
 It is **not** open source — do not add an open-source license or public-domain
 dedication, and do not reuse the code/content elsewhere without the owner's
 written permission.

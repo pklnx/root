@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>pklnx.space</title>
-<meta name="description" content="pklnx — infrastructure &amp; cloud engineering">
-<meta name="theme-color" content="#08080a">
+<meta name="description" content="pklnx — Infrastructure &amp; cloud engineering">
+<meta name="theme-color" content="#161616">
 <meta name="robots" content="noindex">
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%2308080a'/%3E%3Cg%20transform='translate(32%2033)%20scale(0.9)%20translate(-32%20-33)'%3E%3Cpath%20fill='%23f3f1ec'%20d='M5.5%2024.5%20L5.5%2051.5%20L58.5%2051.5%20L58.5%2024.5%20L51.5%2024.5%20L51.5%2044.5%20L12.5%2044.5%20L12.5%2024.5%20Z'/%3E%3Cpath%20fill='%23ff5a36'%20d='M30.2%2013%20L33.8%2013%20L37.1%2022.9%20L47%2026.2%20L47%2029.8%20L37.1%2033.1%20L33.8%2043%20L30.2%2043%20L26.9%2033.1%20L17%2029.8%20L17%2026.2%20L26.9%2022.9%20Z'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23161616'/%3E%3Cpath%20fill='%23f4f4f4'%20d='M5.5%2024.5%20L5.5%2051.5%20L58.5%2051.5%20L58.5%2024.5%20L51.5%2024.5%20L51.5%2044.5%20L12.5%2044.5%20L12.5%2024.5%20Z'/%3E%3Cpath%20fill='%23a56eff'%20d='M30.2%2013%20L33.8%2013%20L37.1%2022.9%20L47%2026.2%20L47%2029.8%20L37.1%2033.1%20L33.8%2043%20L30.2%2043%20L26.9%2033.1%20L17%2029.8%20L17%2026.2%20L26.9%2022.9%20Z'/%3E%3C/svg%3E">
 
 <!-- Both typefaces are served from this origin, never from Google Fonts (CI
      fails on that host name anywhere in this file, comments included):
@@ -17,35 +17,31 @@
      only finds them once it has parsed the CSS that asks for them, which is one
      swap-flash per file. Keep this list and the @font-face rules below in step;
      a preload nobody uses is a wasted download. -->
-<link rel="preload" href="/fonts/space-mono-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/space-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/ibm-plex-mono-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/ibm-plex-sans-400.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-  /* Space Mono — © 2016 The Space Mono Project Authors,
-     https://github.com/googlefonts/spacemono
-     SIL Open Font License 1.1, shipped alongside at /fonts/OFL-SpaceMono.txt.
-     Self-hosted, latin subset; see fonts/README.md for version and provenance. */
+  /* IBM Plex Mono and IBM Plex Sans — © 2017 IBM Corp., Reserved Font Name
+     "Plex", https://github.com/IBM/plex
+     SIL Open Font License 1.1, shipped alongside at /fonts/OFL-IBMPlex.txt.
+     IBM's own Latin1 split files, unmodified (the Reserved Font Name rules out
+     subsetting them ourselves); see fonts/README.md. */
   @font-face {
-    font-family: "Space Mono";
-    src: url("/fonts/space-mono-400.woff2") format("woff2");
+    font-family: "IBM Plex Mono";
+    src: url("/fonts/ibm-plex-mono-400.woff2") format("woff2");
     font-weight: 400;
     font-style: normal;
     font-display: swap;
   }
 
   @font-face {
-    font-family: "Space Mono";
-    src: url("/fonts/space-mono-700.woff2") format("woff2");
-    font-weight: 700;
+    font-family: "IBM Plex Mono";
+    src: url("/fonts/ibm-plex-mono-600.woff2") format("woff2");
+    font-weight: 600;
     font-style: normal;
     font-display: swap;
   }
 
-  /* IBM Plex Sans — © 2017 IBM Corp., Reserved Font Name "Plex",
-     https://github.com/IBM/plex
-     SIL Open Font License 1.1, shipped alongside at /fonts/OFL-IBMPlex.txt.
-     IBM's own Latin1 split file, unmodified (the Reserved Font Name rules out
-     subsetting it ourselves); see fonts/README.md. */
   @font-face {
     font-family: "IBM Plex Sans";
     src: url("/fonts/ibm-plex-sans-400.woff2") format("woff2");
@@ -54,23 +50,35 @@
     font-display: swap;
   }
 
-  /* Tokens from the pklnx.space design system, dark theme. */
+  /* Tokens from the pklnx.space design system (Carbon v11, G100 theme),
+     under their Carbon names and values. Only the ones this page uses. */
   :root {
-    --ground:    #08080a;
-    --surface:   #111114;  /* row hover */
-    --line:      #2c2c31;  /* rules: header, footer, service list */
-    --line-soft: #1a1a1e;  /* separators between service rows */
-    --ink:       #f3f1ec;  /* wordmark, service names, prompt */
-    --ink-muted: #a3a09a;  /* every dimmed text, 12 px included: 7.7:1 */
-    --star:      #ff5a36;  /* the star, the $ sigil */
-    --star-ink:  #ff7a5c;  /* the accent as text: host links, 7.8:1 */
+    --background:         #161616;
+    --background-hover:   rgba(141, 141, 141, 0.16);  /* service row hover */
+    --border-subtle-00:   #393939;  /* rules: header, footer, service list */
+    --text-primary:       #f4f4f4;  /* wordmark, service names, prompt */
+    --text-secondary:     #c6c6c6;  /* every dimmed text, 12 px included: 10.6:1 */
+    --link-primary:       #be95ff;  /* host links: 7.7:1 */
+    --link-primary-hover: #d4bbff;
+    --focus:              #ffffff;
+    --star:               #a56eff;  /* the star, the $ sigil; never a control */
 
-    /* The self-hosted faces first, system stacks behind them for the moment
-       before they load (font-display: swap) and for a browser without woff2. */
-    --mono: "Space Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
-            Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace;
-    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto,
-            "Helvetica Neue", Arial, sans-serif;
+    --spacing-02: 0.25rem;
+    --spacing-03: 0.5rem;
+    --spacing-04: 0.75rem;
+    --spacing-05: 1rem;
+    --spacing-06: 1.5rem;
+    --spacing-07: 2rem;
+    --spacing-09: 3rem;
+    --spacing-10: 4rem;
+    --spacing-11: 5rem;
+
+    /* Carbon's stacks: the self-hosted faces first, system fonts behind them
+       for the moment before they load (font-display: swap). */
+    --font-mono: "IBM Plex Mono", "Menlo", "DejaVu Sans Mono",
+                 "Bitstream Vera Sans Mono", Courier, monospace;
+    --font-sans: "IBM Plex Sans", system-ui, -apple-system, BlinkMacSystemFont,
+                 ".SFNSText-Regular", sans-serif;
   }
 
   * { box-sizing: border-box; }
@@ -82,21 +90,27 @@
     min-height: 100svh;
     display: grid;
     grid-template-rows: auto 1fr auto;
-    gap: 48px;
-    padding: 5vh 6vw;
-    background: var(--ground);
-    color: var(--ink);
-    font-family: var(--mono);
-    font-size: 15px;
-    line-height: 1.6;
+    gap: var(--spacing-09);
+    padding: var(--spacing-07) var(--spacing-05);
+    background: var(--background);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.5;
     -webkit-text-size-adjust: 100%;
+  }
+
+  /* Carbon's grid: 16 px page margin on a phone, 32 px from the md breakpoint. */
+  @media (min-width: 42rem) {
+    body { padding: var(--spacing-09) var(--spacing-07); }
   }
 
   a { color: inherit; text-decoration: none; }
 
+  /* Carbon focus: 2 px inside, white on the dark theme. */
   a:focus-visible {
-    outline: 2px solid var(--star);
-    outline-offset: 4px;
+    outline: 2px solid var(--focus);
+    outline-offset: -2px;
   }
 
   /* Grid items default to min-width: auto, so a single unbreakable row — the
@@ -105,8 +119,8 @@
   header, main, footer { min-width: 0; }
 
   /* Every logo path takes its color from here, so the tokens stay the single
-     source. Text and bracket in ink, the star in star. */
-  .ink  { fill: var(--ink); }
+     source. Text and bracket in text-primary, the star in star. */
+  .ink  { fill: var(--text-primary); }
   .star { fill: var(--star); }
 
   /* --- Header ------------------------------------------------------------ */
@@ -115,24 +129,24 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--line);
+    gap: var(--spacing-06);
+    padding-bottom: var(--spacing-05);
+    border-bottom: 1px solid var(--border-subtle-00);
   }
 
   .mark { display: block; width: 32px; height: 32px; }
 
+  /* label-01 */
   .eyebrow {
-    font-size: 12px;
-    color: var(--ink-muted);
-    letter-spacing: .12em;
-    text-transform: uppercase;
+    font-size: 0.75rem;
+    line-height: 1.33333;
+    letter-spacing: 0.32px;
+    color: var(--text-secondary);
     white-space: nowrap;
   }
 
-  /* Tracked-out uppercase does not fit next to the mark on a phone, and
-     breaking it over two lines looks like an accident. The tagline two rows
-     below says the same thing, so dropping it there costs nothing. */
+  /* Next to the mark on a phone the eyebrow is a squeeze, and the tagline two
+     rows below says the same thing, so dropping it there costs nothing. */
   @media (max-width: 40rem) {
     .eyebrow { display: none; }
   }
@@ -143,103 +157,133 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 64px;
-    max-width: 80ch;
+    gap: var(--spacing-10);
+    max-width: 50rem;
   }
 
-  .hero { display: flex; flex-direction: column; gap: 28px; }
+  @media (min-width: 42rem) {
+    main { gap: var(--spacing-11); }
+  }
+
+  .hero { display: flex; flex-direction: column; gap: var(--spacing-07); }
 
   h1 { margin: 0; line-height: 0; }
 
   /* The wordmark is the logo itself, drawn as paths, so it looks the same
      whether or not the webfont has arrived. It scales with the viewport and
-     stops at 760 px, where it already fills a laptop's first screen. */
+     stops at 786 px, where it already fills a laptop's first screen. */
   .wordmark {
     display: block;
-    width: clamp(260px, 72vw, 760px);
+    width: clamp(269px, 74vw, 786px);
     max-width: 100%;
     height: auto;
   }
 
+  /* body-02 */
   .tagline {
     margin: 0;
-    max-width: 52ch;
-    font-family: var(--sans);
-    font-size: clamp(16px, 1.8vw, 19px);
-    line-height: 1.6;
-    color: var(--ink-muted);
+    max-width: 68ch;
+    color: var(--text-secondary);
     text-wrap: pretty;
   }
 
   /* --- Services ----------------------------------------------------------- */
 
-  .services { display: flex; flex-direction: column; gap: 20px; }
+  .services { display: flex; flex-direction: column; gap: var(--spacing-05); }
 
+  /* The design system's prompt style; its smaller step on a phone. */
   .prompt {
     display: flex;
     align-items: baseline;
-    gap: 12px;
+    gap: var(--spacing-04);
     margin: 0;
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -.01em;
+    font-family: var(--font-mono);
+    font-size: 1.75rem;
+    line-height: 1.28572;
+    font-weight: 600;
   }
   .prompt .sigil { color: var(--star); }
+
+  @media (max-width: 40rem) {
+    .prompt { font-size: 1.25rem; line-height: 1.4; }
+  }
 
   .list {
     display: flex;
     flex-direction: column;
-    padding-left: 24px;
-    border-left: 1px solid var(--line);
+    padding-left: var(--spacing-06);
+    border-left: 1px solid var(--border-subtle-00);
   }
 
   .service {
     display: flex;
     flex-wrap: wrap;
-    column-gap: 24px;
-    row-gap: 4px;
+    column-gap: var(--spacing-06);
+    row-gap: var(--spacing-02);
     align-items: baseline;
-    padding: 12px;
-    margin-left: -12px;
-    border-bottom: 1px solid var(--line-soft);
+    padding: var(--spacing-04);
+    margin-left: calc(-1 * var(--spacing-04));
+    border-bottom: 1px solid var(--border-subtle-00);
+    font-size: 0.875rem;
+    line-height: 1.42857;
   }
 
-  .service:hover { background: var(--surface); }
+  .service:hover { background: var(--background-hover); }
 
-  .service .name { min-width: 12ch; font-weight: 700; color: var(--ink); }
-  .service .role { flex: 1 1 12ch; color: var(--ink-muted); }
+  /* Name and host are names of machines, so mono (code-02); the role is
+     language, so sans (body-01). */
+  .service .name {
+    min-width: 12ch;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    letter-spacing: 0.32px;
+  }
+
+  .service .role {
+    flex: 1 1 12ch;
+    letter-spacing: 0.16px;
+    color: var(--text-secondary);
+  }
 
   .service .host {
     flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--star-ink);
+    gap: var(--spacing-03);
+    font-family: var(--font-mono);
+    letter-spacing: 0.32px;
+    color: var(--link-primary);
   }
 
-  /* Line icon from the design system: 24 grid, 2 px square stroke. */
+  .service:hover .host {
+    color: var(--link-primary-hover);
+    text-decoration: underline;
+  }
+
+  /* Carbon icon (Launch), 16 px next to text, filled in currentColor. */
   .icon {
-    width: 14px;
-    height: 14px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: square;
+    flex: none;
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
   }
 
   /* --- Footer ------------------------------------------------------------- */
 
+  /* code-01: the footer only holds the host name. */
   footer {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     flex-wrap: wrap;
-    gap: 24px;
-    padding-top: 16px;
-    border-top: 1px solid var(--line);
-    font-size: 12px;
-    color: var(--ink-muted);
+    gap: var(--spacing-06);
+    padding-top: var(--spacing-05);
+    border-top: 1px solid var(--border-subtle-00);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.33333;
+    letter-spacing: 0.32px;
+    color: var(--text-secondary);
   }
 </style>
 </head>
@@ -252,22 +296,23 @@
   </svg>
   <!-- Hidden from assistive technology: it repeats the tagline two rows below
        word for word, and a screen reader would read the line out twice. -->
-  <span class="eyebrow" aria-hidden="true">infrastructure &amp; cloud engineering</span>
+  <span class="eyebrow" aria-hidden="true">Infrastructure &amp; cloud engineering</span>
 </header>
 
 <main>
 
   <section class="hero">
     <!-- The wordmark: "pklnx", the star as the dot, "space", all inside the
-         space-bar bracket. Paths generated from Space Mono; see README. -->
+         space-bar bracket. Paths from the design system's logo files
+         (IBM Plex Mono, converted once); see README. -->
     <h1>
-      <svg class="wordmark" viewBox="0 -70 692 110.5" role="img" aria-label="pklnx.space">
-        <path class="ink" d="M51.8 20H39.2V-49.6H51.8V-42.4H53.6Q55.6 -46.5 59.4 -48.75Q63.2 -51 69.1 -51Q73.5 -51 77.45 -49.3Q81.4 -47.6 84.35 -44.35Q87.3 -41.1 89.05 -36.4Q90.8 -31.7 90.8 -25.7V-23.9Q90.8 -17.8 89.1 -13.1Q87.4 -8.4 84.5 -5.15Q81.6 -1.9 77.65 -0.25Q73.7 1.4 69.1 1.4Q65.7 1.4 63.2 0.7Q60.7 0 58.85 -1.2Q57 -2.4 55.75 -3.95Q54.5 -5.5 53.6 -7.2H51.8ZM65 -10.6Q70.9 -10.6 74.55 -14.25Q78.2 -17.9 78.2 -24.2V-25.4Q78.2 -31.7 74.55 -35.35Q70.9 -39 65 -39Q59.1 -39 55.45 -35.25Q51.8 -31.5 51.8 -25.4V-24.2Q51.8 -18.1 55.45 -14.35Q59.1 -10.6 65 -10.6Z M115.6 -31.4H118L131.2 -49.6H145V-49L129 -26.3V-24.5L146.6 -0.6V0H132.2L118 -19.4H115.6V0H103V-70H115.6Z M155.9 -12H173.3V-58H156.5V-70H185.9V-12H202.1V0H155.9Z M226 0H213.4V-49.6H226V-42.2H227.8Q229.5 -46.4 233.3 -48.7Q237.1 -51 242.2 -51Q245.8 -51 248.95 -49.85Q252.1 -48.7 254.5 -46.3Q256.9 -43.9 258.25 -40.2Q259.6 -36.5 259.6 -31.4V0H247V-28.2Q247 -33.5 244.45 -36.55Q241.9 -39.6 237.1 -39.6Q231.5 -39.6 228.75 -35.85Q226 -32.1 226 -25.8Z M303.5 -49.6H317.4L305.4 -26.3V-24.5L318.1 0H303.6L294.3 -19.4H292.5L283.2 0H268.7L281.4 -24.5V-26.3L269.3 -49.6H283.3L292.5 -31.4H294.3Z M387 -36.8Q387 -33.2 390.05 -31.3Q393.1 -29.4 401.2 -28.8Q409.9 -28.1 414.45 -24.65Q419 -21.2 419 -14.6V-14Q419 -10.4 417.55 -7.55Q416.1 -4.7 413.55 -2.7Q411 -0.7 407.35 0.35Q403.7 1.4 399.4 1.4Q393.6 1.4 389.45 -0.15Q385.3 -1.7 382.55 -4.25Q379.8 -6.8 378.4 -10.05Q377 -13.3 376.8 -16.6L384.2 -18.4Q384.7 -12.7 388.6 -9.25Q392.5 -5.8 399 -5.8Q404.5 -5.8 407.85 -7.95Q411.2 -10.1 411.2 -14Q411.2 -18.2 407.9 -20Q404.6 -21.8 397.2 -22.3Q388.6 -22.9 384 -26.3Q379.4 -29.7 379.4 -36.2V-36.8Q379.4 -40.3 380.9 -42.95Q382.4 -45.6 384.95 -47.4Q387.5 -49.2 390.7 -50.1Q393.9 -51 397.4 -51Q402.3 -51 406 -49.65Q409.7 -48.3 412.2 -46.15Q414.7 -44 416.05 -41.2Q417.4 -38.4 417.8 -35.6L410.4 -33.8Q409.9 -38.6 406.55 -41.3Q403.2 -44 397.8 -44Q395.7 -44 393.75 -43.55Q391.8 -43.1 390.3 -42.2Q388.8 -41.3 387.9 -39.95Q387 -38.6 387 -36.8Z M439.9 20H432.1V-49.6H439.9V-41.8H441.1Q443.7 -46.3 448.3 -48.65Q452.9 -51 458.3 -51Q462.9 -51 467 -49.3Q471.1 -47.6 474.25 -44.4Q477.4 -41.2 479.25 -36.5Q481.1 -31.8 481.1 -25.8V-23.8Q481.1 -17.7 479.3 -13Q477.5 -8.3 474.35 -5.1Q471.2 -1.9 467 -0.25Q462.8 1.4 458.1 1.4Q455.7 1.4 453.2 0.85Q450.7 0.3 448.45 -0.85Q446.2 -2 444.3 -3.65Q442.4 -5.3 441.1 -7.6H439.9ZM456.5 -6Q460.1 -6 463.1 -7.25Q466.1 -8.5 468.35 -10.8Q470.6 -13.1 471.85 -16.4Q473.1 -19.7 473.1 -23.8V-25.8Q473.1 -29.8 471.85 -33.05Q470.6 -36.3 468.35 -38.65Q466.1 -41 463.05 -42.3Q460 -43.6 456.5 -43.6Q453 -43.6 450 -42.25Q447 -40.9 444.75 -38.5Q442.5 -36.1 441.2 -32.75Q439.9 -29.4 439.9 -25.4V-24.2Q439.9 -20.1 441.2 -16.75Q442.5 -13.4 444.75 -11Q447 -8.6 450 -7.3Q453 -6 456.5 -6Z M527.1 -8.4H525.9Q523.5 -3.4 519.25 -1Q515 1.4 510.3 1.4Q505.4 1.4 501.2 -0.25Q497 -1.9 493.85 -5.15Q490.7 -8.4 488.9 -13.1Q487.1 -17.8 487.1 -24V-25.6Q487.1 -31.7 488.9 -36.4Q490.7 -41.1 493.85 -44.35Q497 -47.6 501.2 -49.3Q505.4 -51 510.1 -51Q515.2 -51 519.35 -48.75Q523.5 -46.5 525.9 -41.8H527.1V-49.6H534.9V-10.2Q534.9 -7.2 537.6 -7.2H540.1V0H534.8Q531.4 0 529.25 -2.2Q527.1 -4.4 527.1 -7.8ZM511.1 -6Q514.6 -6 517.55 -7.3Q520.5 -8.6 522.6 -11Q524.7 -13.4 525.9 -16.75Q527.1 -20.1 527.1 -24.2V-25.4Q527.1 -29.4 525.9 -32.75Q524.7 -36.1 522.55 -38.5Q520.4 -40.9 517.45 -42.25Q514.5 -43.6 511.1 -43.6Q507.6 -43.6 504.7 -42.3Q501.8 -41 499.65 -38.65Q497.5 -36.3 496.3 -32.95Q495.1 -29.6 495.1 -25.6V-24Q495.1 -15.5 499.55 -10.75Q504 -6 511.1 -6Z M594.7 -17.6Q593.9 -13.5 591.95 -10Q590 -6.5 587 -3.95Q584 -1.4 580 0Q576 1.4 571.1 1.4Q565.9 1.4 561.25 -0.3Q556.6 -2 553.1 -5.25Q549.6 -8.5 547.55 -13.2Q545.5 -17.9 545.5 -24V-25.2Q545.5 -31.2 547.55 -36Q549.6 -40.8 553.1 -44.1Q556.6 -47.4 561.25 -49.2Q565.9 -51 571.1 -51Q575.8 -51 579.8 -49.6Q583.8 -48.2 586.85 -45.65Q589.9 -43.1 591.85 -39.6Q593.8 -36.1 594.5 -32L586.7 -30.2Q586.4 -32.8 585.25 -35.25Q584.1 -37.7 582.15 -39.55Q580.2 -41.4 577.4 -42.5Q574.6 -43.6 570.9 -43.6Q567.3 -43.6 564.15 -42.25Q561 -40.9 558.6 -38.45Q556.2 -36 554.85 -32.6Q553.5 -29.2 553.5 -25.2V-24Q553.5 -19.8 554.85 -16.45Q556.2 -13.1 558.6 -10.8Q561 -8.5 564.2 -7.25Q567.4 -6 571.1 -6Q574.8 -6 577.55 -7.15Q580.3 -8.3 582.25 -10.15Q584.2 -12 585.35 -14.4Q586.5 -16.8 586.9 -19.4Z M611.2 -22.4Q611.5 -15 615.8 -10.5Q620.1 -6 627.8 -6Q631.3 -6 633.9 -6.8Q636.5 -7.6 638.35 -9Q640.2 -10.4 641.35 -12.25Q642.5 -14.1 643.2 -16.2L650.6 -14.2Q648.5 -7.3 642.85 -2.95Q637.2 1.4 627.6 1.4Q622.3 1.4 617.85 -0.45Q613.4 -2.3 610.2 -5.7Q607 -9.1 605.2 -13.8Q603.4 -18.5 603.4 -24.2V-26.6Q603.4 -31.8 605.25 -36.3Q607.1 -40.8 610.4 -44.05Q613.7 -47.3 618.15 -49.15Q622.6 -51 627.8 -51Q633.9 -51 638.35 -48.75Q642.8 -46.5 645.65 -43.2Q648.5 -39.9 649.85 -36Q651.2 -32.1 651.2 -28.8V-22.4ZM627.8 -43.6Q624.5 -43.6 621.65 -42.55Q618.8 -41.5 616.65 -39.6Q614.5 -37.7 613.15 -35.15Q611.8 -32.6 611.4 -29.6H643.4Q643.2 -32.8 641.85 -35.4Q640.5 -38 638.35 -39.8Q636.2 -41.6 633.45 -42.6Q630.7 -43.6 627.8 -43.6Z"/>
-        <path class="star" d="M344.2 -30 L347.8 -30 L351.1 -20.1 L361 -16.8 L361 -13.2 L351.1 -9.9 L347.8 0 L344.2 0 L340.9 -9.9 L331 -13.2 L331 -16.8 L340.9 -20.1 Z"/>
-        <path class="ink" d="M0 -6 L0 40.5 L692 40.5 L692 -6 L683.5 -6 L683.5 32 L8.5 32 L8.5 -6 Z"/>
+      <svg class="wordmark" viewBox="-28.1 -72 715.4 112.5" role="img" aria-label="pklnx.space">
+        <path class="ink" d="M5.9 -51.6H20.7V-42.2H21.4Q23.3 -46.8 26.9 -49.8Q30.5 -52.8 36.7 -52.8Q41 -52.8 44.55 -51.2Q48.1 -49.6 50.65 -46.3Q53.2 -43 54.65 -37.9Q56.1 -32.8 56.1 -25.8Q56.1 -18.8 54.65 -13.7Q53.2 -8.6 50.65 -5.3Q48.1 -2 44.55 -0.4Q41 1.2 36.7 1.2Q30.5 1.2 26.9 -1.75Q23.3 -4.7 21.4 -9.4H20.7V20H5.9ZM30.3 -10.3Q35.3 -10.3 38 -13.35Q40.7 -16.4 40.7 -21.8V-29.8Q40.7 -35.2 38 -38.25Q35.3 -41.3 30.3 -41.3Q26.4 -41.3 23.55 -39.4Q20.7 -37.5 20.7 -33.4V-18.2Q20.7 -14.1 23.55 -12.2Q26.4 -10.3 30.3 -10.3Z M66.5 -74H81.3V-32H82L88.9 -40.1L99.7 -51.6H116.7L96.7 -31.2L118.8 0H101.2L86.2 -22.8L81.3 -17.9V0H66.5Z M126.8 -11.5H142.6V-62.5H126.8V-74H157.4V-11.5H173.2V0H126.8Z M186.5 0V-51.6H201.3V-42.2H201.9Q202.8 -44.4 204.1 -46.3Q205.4 -48.2 207.25 -49.65Q209.1 -51.1 211.55 -51.95Q214 -52.8 217.1 -52.8Q220.8 -52.8 223.9 -51.55Q227 -50.3 229.2 -47.8Q231.4 -45.3 232.65 -41.7Q233.9 -38.1 233.9 -33.4V0H219.1V-31.4Q219.1 -41.4 210.4 -41.4Q208.7 -41.4 207.05 -40.95Q205.4 -40.5 204.1 -39.55Q202.8 -38.6 202.05 -37.2Q201.3 -35.8 201.3 -33.9V0Z M242.3 0 261.6 -26.2 243.6 -51.6H260.5L266 -43.3L270.2 -36.6H271L275.3 -43.3L280.9 -51.6H296.4L278.4 -27L297.7 0H280.7L274.2 -9.7L269.7 -16.6H268.9L264.5 -9.7L257.9 0Z M390.6 1.2Q382.5 1.2 376.65 -1.55Q370.8 -4.3 366.7 -8.9L372.1 -13.6Q375.8 -9.7 380.2 -7.6Q384.6 -5.5 390.8 -5.5Q396.8 -5.5 400.65 -7.65Q404.5 -9.8 404.5 -14.4Q404.5 -16.4 403.75 -17.75Q403 -19.1 401.7 -19.9Q400.4 -20.7 398.8 -21.15Q397.2 -21.6 395.4 -21.9L387.3 -23.1Q384.6 -23.5 381.45 -24.2Q378.3 -24.9 375.7 -26.45Q373.1 -28 371.35 -30.6Q369.6 -33.2 369.6 -37.4Q369.6 -41.3 371.15 -44.15Q372.7 -47 375.5 -48.95Q378.3 -50.9 382.1 -51.85Q385.9 -52.8 390.4 -52.8Q397.4 -52.8 402.55 -50.6Q407.7 -48.4 411.4 -44.5L406.2 -39.6Q405.3 -40.7 403.95 -41.85Q402.6 -43 400.65 -43.95Q398.7 -44.9 396.1 -45.5Q393.5 -46.1 390.1 -46.1Q384 -46.1 380.75 -44Q377.5 -41.9 377.5 -37.9Q377.5 -35.9 378.25 -34.55Q379 -33.2 380.3 -32.4Q381.6 -31.6 383.25 -31.15Q384.9 -30.7 386.6 -30.4L394.7 -29.2Q397.5 -28.8 400.6 -28.1Q403.7 -27.4 406.3 -25.85Q408.9 -24.3 410.65 -21.7Q412.4 -19.1 412.4 -14.9Q412.4 -7.2 406.45 -3Q400.5 1.2 390.6 1.2Z M429.5 -51.6H437.5V-43.2H437.9Q442.9 -52.8 453.8 -52.8Q463.3 -52.8 468.65 -45.7Q474 -38.6 474 -25.8Q474 -13 468.65 -5.9Q463.3 1.2 453.8 1.2Q442.9 1.2 437.9 -8.4H437.5V20H429.5ZM450.7 -5.9Q457.7 -5.9 461.55 -10.15Q465.4 -14.4 465.4 -21.4V-30.2Q465.4 -37.2 461.55 -41.45Q457.7 -45.7 450.7 -45.7Q448 -45.7 445.6 -45Q443.2 -44.3 441.4 -42.95Q439.6 -41.6 438.55 -39.65Q437.5 -37.7 437.5 -35.1V-16.5Q437.5 -13.9 438.55 -11.95Q439.6 -10 441.4 -8.65Q443.2 -7.3 445.6 -6.6Q448 -5.9 450.7 -5.9Z M529.5 0Q524.8 0 522.8 -2.4Q520.8 -4.8 520.3 -8.4H519.8Q518.1 -3.9 514.35 -1.35Q510.6 1.2 504.3 1.2Q496.2 1.2 491.4 -3Q486.6 -7.2 486.6 -14.5Q486.6 -21.7 491.85 -25.6Q497.1 -29.5 508.8 -29.5H519.8V-34.6Q519.8 -40.3 516.6 -43.15Q513.4 -46 507.5 -46Q502.3 -46 499 -43.95Q495.7 -41.9 493.7 -38.4L488.3 -42.4Q489.3 -44.4 491 -46.3Q492.7 -48.2 495.2 -49.65Q497.7 -51.1 500.9 -51.95Q504.1 -52.8 508 -52.8Q517.1 -52.8 522.45 -48.2Q527.8 -43.6 527.8 -35.4V-7H535V0ZM505.7 -5.5Q508.8 -5.5 511.35 -6.25Q513.9 -7 515.8 -8.25Q517.7 -9.5 518.75 -11.25Q519.8 -13 519.8 -15V-23.5H508.8Q501.6 -23.5 498.3 -21.5Q495 -19.5 495 -15.7V-13.6Q495 -9.6 497.85 -7.55Q500.7 -5.5 505.7 -5.5Z M571.8 1.2Q566.2 1.2 561.85 -0.75Q557.5 -2.7 554.5 -6.2Q551.5 -9.7 549.95 -14.7Q548.4 -19.7 548.4 -25.8Q548.4 -31.9 550 -36.9Q551.6 -41.9 554.6 -45.45Q557.6 -49 561.9 -50.9Q566.2 -52.8 571.7 -52.8Q579.2 -52.8 583.9 -49.5Q588.6 -46.2 590.8 -40.9L584.4 -37.5Q583 -41.5 579.75 -43.7Q576.5 -45.9 571.7 -45.9Q568.2 -45.9 565.45 -44.75Q562.7 -43.6 560.8 -41.5Q558.9 -39.4 557.95 -36.5Q557 -33.6 557 -30.2V-21.4Q557 -18 557.95 -15.1Q558.9 -12.2 560.8 -10.1Q562.7 -8 565.5 -6.85Q568.3 -5.7 571.9 -5.7Q577.1 -5.7 580.5 -8.1Q583.9 -10.5 585.9 -14.7L591.6 -10.8Q589.3 -5.6 584.45 -2.2Q579.6 1.2 571.8 1.2Z M630.9 1.2Q625.3 1.2 620.85 -0.7Q616.4 -2.6 613.25 -6.15Q610.1 -9.7 608.4 -14.65Q606.7 -19.6 606.7 -25.7Q606.7 -31.9 608.45 -36.9Q610.2 -41.9 613.3 -45.45Q616.4 -49 620.75 -50.9Q625.1 -52.8 630.4 -52.8Q635.6 -52.8 639.85 -50.9Q644.1 -49 647.1 -45.65Q650.1 -42.3 651.7 -37.7Q653.3 -33.1 653.3 -27.6V-23.8H615.1V-21.4Q615.1 -18 616.2 -15.1Q617.3 -12.2 619.35 -10.1Q621.4 -8 624.35 -6.85Q627.3 -5.7 630.9 -5.7Q636.1 -5.7 639.9 -8.1Q643.7 -10.5 645.7 -14.7L651.6 -10.7Q649.3 -5.5 643.95 -2.15Q638.6 1.2 630.9 1.2ZM630.4 -46.2Q627.1 -46.2 624.3 -45Q621.5 -43.8 619.45 -41.7Q617.4 -39.6 616.25 -36.75Q615.1 -33.9 615.1 -30.5V-29.8H644.7V-30.9Q644.7 -34.3 643.65 -37.1Q642.6 -39.9 640.75 -41.95Q638.9 -44 636.25 -45.1Q633.6 -46.2 630.4 -46.2Z"/>
+        <path class="star" d="M328.14 -30.96 L331.86 -30.96 L335.26 -20.74 L345.48 -17.34 L345.48 -13.62 L335.26 -10.22 L331.86 0 L328.14 0 L324.74 -10.22 L314.52 -13.62 L314.52 -17.34 L324.74 -20.74 Z"/>
+        <path class="ink" d="M-28.1 -6 L-28.1 40.5 L687.3 40.5 L687.3 -6 L678.8 -6 L678.8 32 L-19.6 32 L-19.6 -6 Z"/>
       </svg>
     </h1>
-    <p class="tagline">infrastructure &amp; cloud engineering.</p>
+    <p class="tagline">Infrastructure &amp; cloud engineering.</p>
   </section>
 
   <section class="services" aria-labelledby="services-title">
@@ -278,8 +323,8 @@
     <div class="list">
       <a class="service" href="https://hermes.pklnx.space">
         <span class="name">hermes</span>
-        <span class="role">mail server</span>
-        <span class="host">hermes.pklnx.space<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/></svg></span>
+        <span class="role">Mail server</span>
+        <span class="host">hermes.pklnx.space<svg class="icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/><path d="M20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2z"/></svg></span>
       </a>
     </div>
   </section>
